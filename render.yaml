@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: pulsefit-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    installCommand: npm install --include=dev
+    buildCommand: npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: CORS_ORIGINS
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_MEDIA_BUCKET
+        value: pulsefit-media
+      - key: SUPABASE_PRODUCT_BUCKET
+        value: pulsefit-products
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: ADMIN_ACCESS_CODE
+        sync: false
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 60000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 120
+      - key: LOGIN_RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: LOGIN_RATE_LIMIT_MAX_ATTEMPTS
+        value: 5

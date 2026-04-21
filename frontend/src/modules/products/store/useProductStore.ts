@@ -1,0 +1,70 @@
+import { create } from 'zustand';
+import * as productService from '../../../services/productService';
+
+export interface Product {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  categoryId: string;
+  subcategoryId?: string | null;
+  categoryName?: string | null;
+  subcategoryName?: string | null;
+  images: string[];
+  isActive: boolean;
+  isFeatured: boolean;
+  isPromo: boolean;
+  isNew: boolean;
+  stockQuantity?: number;
+  created_at: string;
+  updated_at?: string;
+}
+
+interface ProductState {
+  products: Product[];
+  isLoading: boolean;
+  error: string;
+  fetchProducts: () => Promise<void>;
+  addProduct: (product: Omit<Product, 'id' | 'created_at'>) => Promise<void>;
+  updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
+  toggleStatus: (id: string, field: 'isActive' | 'isFeatured' | 'isPromo' | 'isNew') => Promise<void>;
+}
+
+export const useProductStore = create<ProductState>((set) => ({
+  products: [],
+  isLoading: false,
+  error: '',
+  fetchProducts: async () => {
+    set({ isLoading: true, error: '' });
+    try {
+      const products = await productService.listAdminProducts();
+      set({ products, isLoading: false });
+    } catch (err: any) {
+      set({ error: err.message, isLoading: false });
+    }
+  },
+  addProduct: async (product) => {
+    const created = await productService.createProduct(product);
+    set((state) => ({ products: [created, ...state.products] }));
+  },
+  updateProduct: async (id, updates) => {
+    const current = useProductStore.getState().products.find((product) => product.id === id);
+    const updated = await productService.updateProduct(id, { ...current, ...updates });
+    set((state) => ({
+      products: state.products.map((product) => product.id === id ? updated : product),
+    }));
+  },
+  deleteProduct: async (id) => {
+    await productService.deleteProduct(id);
+    set((state) => ({
+      products: state.products.filter((product) => product.id !== id),
+    }));
+  },
+  toggleStatus: async (id, field) => {
+    const updated = await productService.toggleProductStatus(id, field);
+    set((state) => ({
+      products: state.products.map((product) => product.id === id ? updated : product),
+    }));
+  },
+}));

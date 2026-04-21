@@ -1,0 +1,69 @@
+import { ShoppingCart } from "lucide-react";
+import { Product } from "../../types";
+import { useStore } from "../../store/useStore";
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export function ProductCard({ product }: ProductCardProps) {
+  const addToCart = useStore((state) => state.addToCart);
+  const openCart = useStore((state) => state.openCart);
+
+  const handleAdd = () => {
+    addToCart(product);
+    openCart(); // Opcional: abre o carrinho direto após adicionar para melhorar fluxo de check-out
+  };
+
+  return (
+    <div className="group flex flex-col h-full bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:-translate-y-1.5 hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-600 transition-all duration-300">
+      {/* Imagem do Produto */}
+      <div className="relative aspect-square overflow-hidden bg-neutral-100 border-b border-neutral-100">
+        {product.imageUrl ? (
+          <img 
+            src={product.imageUrl} 
+            alt={product.name} 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-neutral-400">
+            Sem Imagem
+          </div>
+        )}
+        <div className="absolute top-3 left-3">
+          <span className="px-2 py-1 bg-gradient-to-r from-purple-800 to-purple-500 font-bold uppercase tracking-widest text-[9px] rounded text-white shadow-sm">
+            {product.category}
+          </span>
+        </div>
+      </div>
+
+      {/* Informações */}
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="font-bold text-base text-neutral-900 leading-tight mb-2 group-hover:text-purple-700 transition-colors">
+          {product.name}
+        </h3>
+        <p className="text-xs text-neutral-500 mb-4 flex-1 line-clamp-3">
+          {product.description}
+        </p>
+
+        <div className="flex items-end justify-between mt-auto">
+          <div className="flex flex-col">
+            <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-bold">Por apenas</span>
+            <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-800 to-purple-500">
+              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
+            </span>
+          </div>
+
+          <button 
+            onClick={handleAdd}
+            className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-800 to-purple-500 text-white flex items-center justify-center hover:from-purple-700 hover:to-purple-400 hover:scale-105 active:scale-95 transition-all shadow-md shadow-purple-500/20"
+            aria-label="Adicionar ao carrinho"
+          >
+            <ShoppingCart className="w-4 h-4 ml-[-2px]" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
