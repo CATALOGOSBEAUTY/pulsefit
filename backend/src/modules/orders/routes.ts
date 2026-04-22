@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { ApiError, handleError, ok, optionalString, requireNumber, requireString } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
+import { invalidatePublicCatalogCache } from '../catalog/service.js';
 import { generateOrderCode } from './orderCode.js';
 import { applyInventoryAdjustments } from './inventory.js';
 
@@ -146,6 +147,7 @@ orderRouter.post('/', async (req, res) => {
     if (itemsError) throw itemsError;
 
     await applyInventoryAdjustments(supabase, normalizedItems);
+    invalidatePublicCatalogCache();
 
     const phone = await getPublicSetting('whatsapp_phone');
     const whatsappUrl = phone

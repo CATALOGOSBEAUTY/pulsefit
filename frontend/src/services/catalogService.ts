@@ -13,6 +13,12 @@ export interface PublicCatalogProduct {
   title: string;
   description: string;
   price: number;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  created_at?: string;
+  relevanceScore?: number;
+  relevanceUnitsSold?: number;
+  relevanceOrderCount?: number;
   categoryId?: string;
   subcategoryId?: string | null;
   categoryName?: string | null;

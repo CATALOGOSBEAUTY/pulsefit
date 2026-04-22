@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { Search, ChevronLeft, ChevronRight, PackageX, Menu, X } from "lucide-react";
 import { ProductCard } from "./ProductCard";
+import { CatalogSortOption, sortCatalogProducts } from "./catalogSort";
 import { useStore } from "../../store/useStore";
 import { getPublicCatalogBootstrap } from "../../services/catalogService";
 import { Product } from "../../types";
@@ -50,6 +51,7 @@ export function Catalog() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sortOption, setSortOption] = useState<CatalogSortOption>("relevance");
   const [storeCategories, setStoreCategories] = useState<CatalogCategory[]>([]);
   const [storeProducts, setStoreProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -99,6 +101,12 @@ export function Catalog() {
             name: product.title,
             description: product.description,
             price: product.price,
+            isFeatured: product.isFeatured ?? false,
+            isNew: product.isNew ?? false,
+            createdAt: product.created_at,
+            relevanceScore: product.relevanceScore ?? 0,
+            relevanceUnitsSold: product.relevanceUnitsSold ?? 0,
+            relevanceOrderCount: product.relevanceOrderCount ?? 0,
             category: product.subcategoryName || product.categoryName || "Diversos",
             categoryId: product.categoryId,
             subcategoryId: product.subcategoryId ?? null,
@@ -147,8 +155,12 @@ export function Catalog() {
     });
   }, [storeProducts, storeCategories, activeCategory, searchTerm]);
 
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage) || 1;
-  const paginatedProducts = filteredProducts.slice(
+  const sortedProducts = useMemo(() => {
+    return sortCatalogProducts(filteredProducts, sortOption);
+  }, [filteredProducts, sortOption]);
+
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage) || 1;
+  const paginatedProducts = sortedProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -156,7 +168,7 @@ export function Catalog() {
   useEffect(() => {
     setCurrentPage(1);
     window.requestAnimationFrame(scrollCatalogToTop);
-  }, [activeCategory, searchTerm]);
+  }, [activeCategory, searchTerm, sortOption]);
 
   return (
     <div className="relative w-full flex-1 flex overflow-hidden bg-neutral-50/50">
@@ -262,30 +274,52 @@ export function Catalog() {
       </aside>
 
       <div ref={catalogScrollRef} className="relative z-10 flex-1 flex flex-col p-4 lg:p-12 overflow-y-auto custom-scrollbar h-full">
-        <header className="mb-6 lg:mb-10 flex flex-col gap-4">
-          <div className="flex items-start gap-4">
-            {!isSidebarOpen && (
-              <button
-                onClick={() => setIsSidebarOpen(true)}
-                className="mt-1 p-2 bg-white border border-neutral-200 rounded-lg text-neutral-600 hover:text-purple-600 transition-colors shadow-sm flex items-center justify-center shrink-0"
-                title="Abrir Categorias"
-                aria-label="Abrir categorias"
+        <header className="mb-6 lg:mb-10 flex flex-col gap-4 lg:gap-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex items-start gap-4">
+              {!isSidebarOpen && (
+                <button
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="mt-1 p-2 bg-white border border-neutral-200 rounded-lg text-neutral-600 hover:text-purple-600 transition-colors shadow-sm flex items-center justify-center shrink-0"
+                  title="Abrir Categorias"
+                  aria-label="Abrir categorias"
+                >
+                  <Menu className="w-5 h-5" />
+                </button>
+              )}
+              <div>
+                <h2 className="text-2xl lg:text-4xl font-bold uppercase tracking-tight text-neutral-900 mb-1 lg:mb-2">
+                  Moda{" "}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-800 to-purple-500">
+                    Fitness
+                  </span>
+                </h2>
+                <p className="text-xs lg:text-sm text-neutral-500">Mais do que roupa, é um estilo de vida!</p>
+              </div>
+            </div>
+
+            <div className="w-full lg:w-[260px] lg:pt-1">
+              <label
+                className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-neutral-400"
+                htmlFor="catalog-sort"
               >
-                <Menu className="w-5 h-5" />
-              </button>
-            )}
-            <div>
-              <h2 className="text-2xl lg:text-4xl font-bold uppercase tracking-tight text-neutral-900 mb-1 lg:mb-2">
-                Moda{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-800 to-purple-500">
-                  Fitness
-                </span>
-              </h2>
-              <p className="text-xs lg:text-sm text-neutral-500">Mais do que roupa, é um estilo de vida!</p>
+                Ordenar por
+              </label>
+              <select
+                id="catalog-sort"
+                value={sortOption}
+                onChange={(event) => setSortOption(event.target.value as CatalogSortOption)}
+                disabled={isLoading}
+                className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 shadow-sm outline-none transition-colors focus:border-purple-500 focus:ring-1 focus:ring-purple-500 disabled:bg-neutral-100 disabled:text-neutral-400"
+              >
+                <option value="relevance">Mais Relevante</option>
+                <option value="price-asc">Menor Preço</option>
+                <option value="price-desc">Maior Preço</option>
+              </select>
             </div>
           </div>
 
-          <div className="w-full lg:w-96 relative mt-2">
+          <div className="w-full lg:w-96 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
               type="text"
@@ -320,7 +354,7 @@ export function Catalog() {
               Tentar novamente
             </button>
           </motion.div>
-        ) : filteredProducts.length === 0 ? (
+        ) : sortedProducts.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

@@ -2,6 +2,8 @@ import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { mapCategory } from '../categories/mapper.js';
 import { mapProduct } from '../products/mapper.js';
 import { productSelect } from '../products/select.js';
+import { buildProductRelevanceMap } from './relevance.js';
+import type { OrderRelevanceSource, ProductRelevanceSource } from './relevance.js';
 
 const PUBLIC_CATALOG_CACHE_TTL_MS = 60_000;
 
@@ -23,7 +25,7 @@ export async function loadPublicCatalogSnapshot(forceRefresh = false): Promise<P
   }
 
   const supabase = getSupabaseAdmin();
-  const [categoriesResult, productsResult] = await Promise.all([
+  const [categoriesResult, productsResult, ordersResult] = await Promise.all([
     supabase
       .from('categories')
       .select('*')
@@ -36,16 +38,40 @@ export async function loadPublicCatalogSnapshot(forceRefresh = false): Promise<P
       .select(productSelect())
       .eq('is_active', true)
       .order('created_at', { ascending: false }),
+    supabase
+      .from('orders')
+      .select('status, created_at, order_items(product_id, quantity)')
+      .neq('status', 'cancelled')
+      .order('created_at', { ascending: false }),
   ]);
 
-  const failed = [categoriesResult, productsResult].find((result) => result.error);
+  const failed = [categoriesResult, productsResult, ordersResult].find((result) => result.error);
   if (failed?.error) {
     throw failed.error;
   }
 
+  const productRows = ((productsResult.data ?? []) as unknown) as ProductRelevanceSource[];
+  const orderRows = ((ordersResult.data ?? []) as unknown) as OrderRelevanceSource[];
+
+  const relevanceByProductId = buildProductRelevanceMap(productRows, orderRows);
+
   const snapshot = {
     categories: (categoriesResult.data ?? []).map(mapCategory),
-    products: (productsResult.data ?? []).map(mapProduct),
+    products: productRows.map((row) => {
+      const mappedProduct = mapProduct(row);
+      const relevance = relevanceByProductId[mappedProduct.id] ?? {
+        score: 0,
+        unitsSold: 0,
+        orderCount: 0,
+      };
+
+      return {
+        ...mappedProduct,
+        relevanceScore: relevance.score,
+        relevanceUnitsSold: relevance.unitsSold,
+        relevanceOrderCount: relevance.orderCount,
+      };
+    }),
   };
 
   publicCatalogCache = {

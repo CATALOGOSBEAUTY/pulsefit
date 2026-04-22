@@ -4,6 +4,12 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  createdAt?: string;
+  relevanceScore?: number;
+  relevanceUnitsSold?: number;
+  relevanceOrderCount?: number;
   imageUrl: string;
   images?: string[];
   category: string;
