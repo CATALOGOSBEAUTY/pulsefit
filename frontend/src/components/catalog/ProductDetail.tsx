@@ -35,6 +35,21 @@ function formatPrice(value: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 }
 
+type ProductDetailTitleBlockProps = {
+  category: string;
+  name: string;
+  className?: string;
+};
+
+function ProductDetailTitleBlock({ category, name, className = "" }: ProductDetailTitleBlockProps) {
+  return (
+    <div className={className}>
+      <p className="text-xs font-bold uppercase tracking-widest text-purple-700">{category}</p>
+      <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight text-neutral-900">{name}</h1>
+    </div>
+  );
+}
+
 export function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -152,6 +167,8 @@ export function ProductDetail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           <div className="flex flex-col gap-5">
+            <ProductDetailTitleBlock category={product.category} name={product.name} className="lg:hidden" />
+
             <div className="bg-white border border-neutral-200 rounded-2xl overflow-hidden">
               {product.imageUrl ? (
                 <img src={product.imageUrl} alt={product.name} loading="eager" decoding="async" className="w-full aspect-square object-cover" referrerPolicy="no-referrer" />
@@ -167,10 +184,7 @@ export function ProductDetail() {
           </div>
 
           <section className="flex flex-col gap-6">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-purple-700">{product.category}</p>
-              <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight text-neutral-900">{product.name}</h1>
-            </div>
+            <ProductDetailTitleBlock category={product.category} name={product.name} className="hidden lg:block" />
 
             {product.features && product.features.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
