@@ -13,11 +13,18 @@ create table if not exists public.categories (
 
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
+  slug text unique,
   title text not null,
   description text not null default '',
   price numeric(12,2) not null check (price >= 0),
   category_id uuid not null references public.categories(id) on delete restrict,
   subcategory_id uuid references public.categories(id) on delete set null,
+  audience text check (audience in ('feminino', 'masculino', 'suplemento')),
+  product_type text,
+  variation text,
+  features jsonb not null default '[]'::jsonb,
+  image_prompt text,
+  catalog_status text not null default 'draft' check (catalog_status in ('draft', 'ready', 'live')),
   is_active boolean not null default true,
   is_featured boolean not null default false,
   is_promo boolean not null default false,

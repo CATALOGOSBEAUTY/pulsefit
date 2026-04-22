@@ -11,12 +11,28 @@ export const productRouter = Router();
 
 function parseProductPayload(body: any): ProductPayload {
   const rawSubcategoryId = body.subcategoryId ?? body.subcategory_id;
+  const rawAudience = body.audience;
+  const audience = rawAudience === 'feminino' || rawAudience === 'masculino' || rawAudience === 'suplemento'
+    ? rawAudience
+    : null;
+  const rawCatalogStatus = body.catalogStatus ?? body.catalog_status;
+  const catalogStatus = rawCatalogStatus === 'draft' || rawCatalogStatus === 'ready' || rawCatalogStatus === 'live'
+    ? rawCatalogStatus
+    : 'draft';
+
   return {
+    slug: typeof body.slug === 'string' && body.slug.trim() ? body.slug.trim() : undefined,
     title: requireString(body.title, 'title'),
     description: optionalString(body.description),
     price: requireNumber(body.price, 'price'),
     categoryId: requireString(body.categoryId ?? body.category_id, 'categoryId'),
     subcategoryId: typeof rawSubcategoryId === 'string' && rawSubcategoryId.trim() ? rawSubcategoryId : null,
+    audience,
+    productType: optionalString(body.productType ?? body.product_type),
+    variation: optionalString(body.variation) || null,
+    features: Array.isArray(body.features) ? body.features.filter((item: unknown) => typeof item === 'string').map((item: string) => item.trim()).filter(Boolean) : [],
+    imagePrompt: optionalString(body.imagePrompt ?? body.image_prompt),
+    catalogStatus,
     images: Array.isArray(body.images) ? body.images.filter((item: unknown) => typeof item === 'string') : [],
     isActive: body.isActive ?? body.is_active ?? true,
     isFeatured: body.isFeatured ?? body.is_featured ?? false,
@@ -114,11 +130,18 @@ productRouter.post('/', requireAuth, async (req, res) => {
     const { data, error } = await getSupabaseAdmin()
       .from('products')
       .insert({
+        slug: payload.slug ?? null,
         title: payload.title,
         description: payload.description,
         price: payload.price,
         category_id: payload.categoryId,
         subcategory_id: payload.subcategoryId,
+        audience: payload.audience,
+        product_type: payload.productType,
+        variation: payload.variation,
+        features: payload.features ?? [],
+        image_prompt: payload.imagePrompt ?? '',
+        catalog_status: payload.catalogStatus ?? 'draft',
         is_active: payload.isActive,
         is_featured: payload.isFeatured,
         is_promo: payload.isPromo,
@@ -148,11 +171,18 @@ productRouter.put('/:id', requireAuth, async (req, res) => {
     const { data, error } = await getSupabaseAdmin()
       .from('products')
       .update({
+        slug: payload.slug ?? null,
         title: payload.title,
         description: payload.description,
         price: payload.price,
         category_id: payload.categoryId,
         subcategory_id: payload.subcategoryId,
+        audience: payload.audience,
+        product_type: payload.productType,
+        variation: payload.variation,
+        features: payload.features ?? [],
+        image_prompt: payload.imagePrompt ?? '',
+        catalog_status: payload.catalogStatus ?? 'draft',
         is_active: payload.isActive,
         is_featured: payload.isFeatured,
         is_promo: payload.isPromo,

@@ -1,9 +1,16 @@
 export interface ProductPayload {
+  slug?: string;
   title: string;
   description: string;
   price: number;
   categoryId: string;
   subcategoryId?: string | null;
+  audience?: 'feminino' | 'masculino' | 'suplemento' | null;
+  productType?: string;
+  variation?: string | null;
+  features?: string[];
+  imagePrompt?: string;
+  catalogStatus?: 'draft' | 'ready' | 'live';
   images: string[];
   isActive: boolean;
   isFeatured: boolean;
@@ -21,11 +28,18 @@ export function mapProduct(row: any) {
 
   return {
     id: row.id,
+    slug: row.slug ?? null,
     title: row.title,
     description: row.description ?? '',
     price: Number(row.price ?? 0),
     categoryId: row.category_id,
     subcategoryId: row.subcategory_id ?? null,
+    audience: row.audience ?? null,
+    productType: row.product_type ?? '',
+    variation: row.variation ?? null,
+    features: Array.isArray(row.features) ? row.features : [],
+    imagePrompt: row.image_prompt ?? '',
+    catalogStatus: row.catalog_status ?? 'draft',
     categoryName: row.categories?.name ?? row.category?.name ?? null,
     subcategoryName: row.subcategory?.name ?? null,
     images,

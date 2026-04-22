@@ -3,11 +3,18 @@ import * as productService from '../../../services/productService';
 
 export interface Product {
   id: string;
+  slug?: string | null;
   title: string;
   description: string;
   price: number;
   categoryId: string;
   subcategoryId?: string | null;
+  audience?: 'feminino' | 'masculino' | 'suplemento' | null;
+  productType?: string;
+  variation?: string | null;
+  features?: string[];
+  imagePrompt?: string;
+  catalogStatus?: 'draft' | 'ready' | 'live';
   categoryName?: string | null;
   subcategoryName?: string | null;
   images: string[];
