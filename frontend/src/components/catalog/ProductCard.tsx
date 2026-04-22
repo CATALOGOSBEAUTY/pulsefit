@@ -1,5 +1,5 @@
 import { ShoppingCart } from "lucide-react";
-import { type MouseEvent } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../types";
 import { useStore } from "../../store/useStore";
@@ -10,8 +10,15 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const addToCart = useStore((state) => state.addToCart);
-  const openCart = useStore((state) => state.openCart);
   const navigate = useNavigate();
+  const [wasAdded, setWasAdded] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const openProduct = () => {
     navigate(`/produto/${product.slug || product.id}`);
@@ -24,7 +31,9 @@ export function ProductCard({ product }: ProductCardProps) {
       return;
     }
     addToCart(product);
-    openCart();
+    setWasAdded(true);
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(() => setWasAdded(false), 1800);
   };
 
   return (
@@ -49,6 +58,11 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.category}
           </span>
         </div>
+        {wasAdded && (
+          <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-lg bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-widest text-center shadow-lg">
+            Adicionado ao carrinho
+          </div>
+        )}
       </div>
 
       <div className="p-5 flex flex-col flex-1">

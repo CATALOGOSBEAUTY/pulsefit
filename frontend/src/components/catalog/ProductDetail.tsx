@@ -40,6 +40,7 @@ export function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [cartFeedback, setCartFeedback] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -90,10 +91,15 @@ export function ProductDetail() {
     ? selectedVariant.stockQuantity > 0 ? `${selectedVariant.stockQuantity} disponivel` : "Indisponivel"
     : availableQuantity > 0 ? `${availableQuantity} disponivel` : "Disponibilidade sob confirmacao";
 
-  const addSelectedToCart = () => {
+  const addSelectedToCart = (openCheckout: boolean) => {
     if (!product) return;
     addToCart(product, selectedVariant, quantity);
-    openCart();
+    if (openCheckout) {
+      openCart();
+      return;
+    }
+    setCartFeedback("Produto adicionado. Voce pode continuar comprando.");
+    window.setTimeout(() => setCartFeedback(""), 2200);
   };
 
   if (isLoading) {
@@ -187,10 +193,22 @@ export function ProductDetail() {
                 </div>
               </div>
 
-              <button onClick={addSelectedToCart} disabled={activeVariants.length > 0 && !selectedVariant} className="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-purple-800 to-purple-500 text-white font-bold text-sm uppercase tracking-tight rounded-xl hover:from-purple-700 hover:to-purple-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-purple-500/20">
-                <ShoppingCart className="w-4 h-4" />
-                Adicionar ao carrinho
-              </button>
+              {cartFeedback && (
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-bold text-emerald-700">
+                  {cartFeedback}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button onClick={() => addSelectedToCart(false)} disabled={activeVariants.length > 0 && !selectedVariant} className="w-full flex items-center justify-center gap-2 py-3.5 border border-purple-200 bg-white text-purple-700 font-bold text-sm uppercase tracking-tight rounded-xl hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                  <Plus className="w-4 h-4" />
+                  Adicionar e continuar
+                </button>
+                <button onClick={() => addSelectedToCart(true)} disabled={activeVariants.length > 0 && !selectedVariant} className="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-purple-800 to-purple-500 text-white font-bold text-sm uppercase tracking-tight rounded-xl hover:from-purple-700 hover:to-purple-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-purple-500/20">
+                  <ShoppingCart className="w-4 h-4" />
+                  Comprar agora
+                </button>
+              </div>
             </div>
           </section>
         </div>
