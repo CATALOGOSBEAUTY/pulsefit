@@ -24,6 +24,16 @@ const publicTabByPath: Record<string, PublicTab> = {
   '/contato': 'contato'
 };
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname]);
+
+  return null;
+}
+
 // Mini componente para a página pública
 function PublicStore() {
   const location = useLocation();
@@ -39,6 +49,7 @@ function PublicStore() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-neutral-50 text-neutral-900 selection:bg-purple-200">
+      <ScrollToTop />
       <Header />
       <main className="flex-1 flex flex-col">
         {routedTab === 'inicio' && <Hero />}

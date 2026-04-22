@@ -2,6 +2,13 @@ import { type ChangeEvent, type FormEvent, useEffect, useState, useRef } from 'r
 import { Plus, Trash2, X, UploadCloud } from 'lucide-react';
 import { useProductStore, Product, ProductVariant } from '../store/useProductStore';
 import { Category, useCategoryStore } from '../../categories/store/useCategoryStore';
+import {
+  createVariantFromPreset,
+  getVariationPreset,
+  inferPresetIdFromVariants,
+  VARIATION_PRESETS,
+  type VariationPresetId,
+} from './variantPresets';
 
 interface ProductFormModalProps {
   onClose: () => void;
@@ -10,19 +17,6 @@ interface ProductFormModalProps {
 
 function getParentId(category: Category) {
   return category.parent_id ?? category.parentId ?? null;
-}
-
-const quickSizes = ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XXG'];
-
-function createVariant(size?: string): ProductVariant {
-  return {
-    label: size ? `Tamanho: ${size}` : '',
-    sku: '',
-    options: size ? [{ name: 'Tamanho', value: size }] : [{ name: '', value: '' }],
-    price: null,
-    stockQuantity: 0,
-    isActive: true,
-  };
 }
 
 export function ProductFormModal({ onClose, productToEdit }: ProductFormModalProps) {
@@ -45,6 +39,9 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
   const [featuresText, setFeaturesText] = useState((productToEdit?.features || []).join('\n'));
   const [catalogStatus, setCatalogStatus] = useState<Product['catalogStatus']>(productToEdit?.catalogStatus || 'draft');
   const [variantsEnabled, setVariantsEnabled] = useState(productToEdit?.variantsEnabled ?? false);
+  const [selectedVariantPresetId, setSelectedVariantPresetId] = useState<VariationPresetId>(
+    inferPresetIdFromVariants(productToEdit?.variants)
+  );
   const [variants, setVariants] = useState<ProductVariant[]>((productToEdit?.variants || []).map((variant) => ({
     ...variant,
     price: variant.price ?? null,
@@ -72,6 +69,10 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
   }, [categoryId, rootCategories]);
 
   const availableSubcategories = categories.filter((category) => getParentId(category) === categoryId);
+  const selectedVariantPreset = getVariationPreset(selectedVariantPresetId);
+  const totalVariantStock = variantsEnabled
+    ? variants.filter((variant) => variant.isActive).reduce((total, variant) => total + Math.max(0, Number(variant.stockQuantity || 0)), 0)
+    : Math.max(0, Number(stockQuantity || 0));
 
   useEffect(() => {
     if (subcategoryId && !availableSubcategories.some((category) => category.id === subcategoryId)) {
@@ -169,9 +170,20 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
     }
   };
 
-  const addSizeVariant = (size: string) => {
-    if (variants.some((variant) => variant.options.some((option) => option.name === 'Tamanho' && option.value === size))) return;
-    setVariants([...variants, createVariant(size)]);
+  const addPresetVariant = (value = '') => {
+    const nextVariant = createVariantFromPreset(selectedVariantPresetId, value);
+    const nextOption = nextVariant.options[0];
+    if (nextOption.value && variants.some((variant) => variant.options.some((option) => option.name === nextOption.name && option.value === nextOption.value))) return;
+    setVariants([...variants, nextVariant]);
+    setVariantsEnabled(true);
+  };
+
+  const addAllPresetVariants = () => {
+    const missingValues = selectedVariantPreset.values.filter((value) => (
+      !variants.some((variant) => variant.options.some((option) => option.name === selectedVariantPreset.optionName && option.value === value))
+    ));
+    if (missingValues.length === 0) return;
+    setVariants([...variants, ...missingValues.map((value) => createVariantFromPreset(selectedVariantPresetId, value))]);
     setVariantsEnabled(true);
   };
 
@@ -190,7 +202,7 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-neutral-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-full flex flex-col shadow-2xl relative overflow-hidden flex-shrink-0 animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl w-full max-w-5xl max-h-full flex flex-col shadow-2xl relative overflow-hidden flex-shrink-0 animate-in fade-in zoom-in-95 duration-200">
         
         <div className="px-6 py-4 border-b border-neutral-100 flex items-center justify-between bg-neutral-50">
           <h2 className="text-xl font-bold uppercase tracking-tight text-neutral-900">
@@ -276,33 +288,85 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
               </label>
 
               {variantsEnabled && (
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-wrap gap-2">
-                    {quickSizes.map((size) => (
-                      <button key={size} type="button" onClick={() => addSizeVariant(size)} className="px-3 py-2 rounded-lg border border-neutral-200 bg-white text-xs font-bold text-neutral-700 hover:border-purple-300 hover:text-purple-700">
-                        {size}
+                <div className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+                    <div>
+                      <p className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Tipo de variacao</p>
+                      <p className="mt-1 text-xs text-neutral-500">Escolha um grupo pronto ou use personalizado. Os campos continuam editaveis.</p>
+                    </div>
+                    <div className="rounded-xl border border-purple-100 bg-white px-4 py-3 text-right">
+                      <span className="block text-[10px] font-bold uppercase tracking-widest text-neutral-400">Estoque total</span>
+                      <span className="text-sm font-black text-purple-700">{totalVariantStock} unidades</span>
+                    </div>
+                    <div className="md:col-span-2 grid grid-cols-2 lg:grid-cols-4 gap-2">
+                      {VARIATION_PRESETS.map((preset) => (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          onClick={() => setSelectedVariantPresetId(preset.id)}
+                          className={`min-h-[44px] rounded-xl border px-3 py-2 text-xs font-bold transition-colors ${
+                            selectedVariantPresetId === preset.id
+                              ? 'border-purple-600 bg-purple-50 text-purple-800'
+                              : 'border-neutral-200 bg-white text-neutral-600 hover:border-purple-300 hover:text-purple-700'
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Opcoes rapidas</p>
+                      {selectedVariantPreset.values.length > 0 && (
+                        <button type="button" onClick={addAllPresetVariants} className="text-xs font-bold text-purple-700 hover:text-purple-900">
+                          Adicionar todas
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedVariantPreset.values.map((value) => (
+                        <button key={value} type="button" onClick={() => addPresetVariant(value)} className="px-3 py-2 rounded-lg border border-neutral-200 bg-white text-xs font-bold text-neutral-700 hover:border-purple-300 hover:text-purple-700">
+                          {value}
+                        </button>
+                      ))}
+                      <button type="button" onClick={() => addPresetVariant()} className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-purple-200 bg-purple-50 text-xs font-bold text-purple-700 hover:bg-purple-100">
+                        <Plus className="w-3.5 h-3.5" /> Variacao livre
                       </button>
-                    ))}
-                    <button type="button" onClick={() => setVariants([...variants, createVariant()])} className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-purple-200 bg-purple-50 text-xs font-bold text-purple-700 hover:bg-purple-100">
-                      <Plus className="w-3.5 h-3.5" /> Variação livre
-                    </button>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-3">
                     {variants.length === 0 && (
                       <div className="p-4 rounded-xl border border-dashed border-neutral-200 text-sm text-neutral-500">
-                        Adicione tamanhos rápidos ou uma variação livre.
+                        Adicione opcoes rapidas ou uma variacao livre.
                       </div>
                     )}
 
                     {variants.map((variant, index) => (
-                      <div key={`${variant.id ?? 'new'}-${index}`} className="grid grid-cols-1 lg:grid-cols-12 gap-3 p-4 rounded-xl border border-neutral-200 bg-neutral-50">
-                        <input value={variant.options[0]?.name ?? ''} onChange={(e) => updateVariantOption(index, 'name', e.target.value)} className="lg:col-span-2 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Tipo" />
-                        <input value={variant.options[0]?.value ?? ''} onChange={(e) => updateVariantOption(index, 'value', e.target.value)} className="lg:col-span-2 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Valor" />
-                        <input value={variant.label} onChange={(e) => updateVariant(index, { label: e.target.value })} className="lg:col-span-3 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Rótulo exibido" />
-                        <input type="number" min="0" step="1" value={variant.stockQuantity} onChange={(e) => updateVariant(index, { stockQuantity: Number(e.target.value) })} className="lg:col-span-1 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Qtd" />
-                        <input type="number" min="0" step="0.01" value={variant.price ?? ''} onChange={(e) => updateVariant(index, { price: e.target.value === '' ? null : Number(e.target.value) })} className="lg:col-span-2 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Preço opc." />
-                        <div className="lg:col-span-2 flex items-center justify-end gap-2">
+                      <div key={`${variant.id ?? 'new'}-${index}`} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 p-4 rounded-2xl border border-neutral-200 bg-neutral-50">
+                        <div className="lg:col-span-2 flex flex-col gap-1.5">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Tipo</label>
+                          <input value={variant.options[0]?.name ?? ''} onChange={(e) => updateVariantOption(index, 'name', e.target.value)} className="px-3 py-3 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder={`Ex: ${selectedVariantPreset.optionName}`} />
+                        </div>
+                        <div className="lg:col-span-2 flex flex-col gap-1.5">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Valor</label>
+                          <input value={variant.options[0]?.value ?? ''} onChange={(e) => updateVariantOption(index, 'value', e.target.value)} className="px-3 py-3 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder={`Ex: ${selectedVariantPreset.placeholderValue}`} />
+                        </div>
+                        <div className="lg:col-span-3 flex flex-col gap-1.5">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Nome exibido</label>
+                          <input value={variant.label} onChange={(e) => updateVariant(index, { label: e.target.value })} className="px-3 py-3 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder={`Ex: ${selectedVariantPreset.placeholderLabel}`} />
+                        </div>
+                        <div className="lg:col-span-2 flex flex-col gap-1.5">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Quantidade</label>
+                          <input type="number" min="0" step="1" value={variant.stockQuantity} onChange={(e) => updateVariant(index, { stockQuantity: Number(e.target.value) })} className="px-3 py-3 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Ex: 12" />
+                        </div>
+                        <div className="lg:col-span-2 flex flex-col gap-1.5">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Preco opcional</label>
+                          <input type="number" min="0" step="0.01" value={variant.price ?? ''} onChange={(e) => updateVariant(index, { price: e.target.value === '' ? null : Number(e.target.value) })} className="px-3 py-3 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Ex: 99.90" />
+                        </div>
+                        <div className="lg:col-span-1 flex items-center justify-end gap-2">
                           <label className="flex items-center gap-2 text-xs font-bold text-neutral-600">
                             <input type="checkbox" checked={variant.isActive} onChange={(e) => updateVariant(index, { isActive: e.target.checked })} className="accent-purple-600" />
                             Ativa

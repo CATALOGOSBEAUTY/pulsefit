@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { Search, ChevronLeft, ChevronRight, PackageX, Menu, X } from "lucide-react";
 import { ProductCard } from "./ProductCard";
@@ -46,6 +46,7 @@ function CatalogSkeleton() {
 
 export function Catalog() {
   const { activeCategory, setActiveCategory } = useStore();
+  const catalogScrollRef = useRef<HTMLDivElement | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -54,6 +55,18 @@ export function Catalog() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const itemsPerPage = 8;
+
+  const scrollCatalogToTop = () => {
+    catalogScrollRef.current?.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  };
+
+  const setCatalogPage = (nextPage: number) => {
+    const safePage = Math.min(totalPages, Math.max(1, nextPage));
+    if (safePage === currentPage) return;
+    setCurrentPage(safePage);
+    window.requestAnimationFrame(scrollCatalogToTop);
+  };
 
   useEffect(() => {
     if (window.innerWidth >= 1024) {
@@ -140,7 +153,10 @@ export function Catalog() {
     currentPage * itemsPerPage
   );
 
-  useEffect(() => setCurrentPage(1), [activeCategory, searchTerm]);
+  useEffect(() => {
+    setCurrentPage(1);
+    window.requestAnimationFrame(scrollCatalogToTop);
+  }, [activeCategory, searchTerm]);
 
   return (
     <div className="relative w-full flex-1 flex overflow-hidden bg-neutral-50/50">
@@ -245,7 +261,7 @@ export function Catalog() {
         </div>
       </aside>
 
-      <div className="relative z-10 flex-1 flex flex-col p-4 lg:p-12 overflow-y-auto custom-scrollbar h-full">
+      <div ref={catalogScrollRef} className="relative z-10 flex-1 flex flex-col p-4 lg:p-12 overflow-y-auto custom-scrollbar h-full">
         <header className="mb-6 lg:mb-10 flex flex-col gap-4">
           <div className="flex items-start gap-4">
             {!isSidebarOpen && (
@@ -356,7 +372,7 @@ export function Catalog() {
             {totalPages > 1 && (
               <div className="mt-auto flex items-center justify-center gap-4 pt-6 border-t border-neutral-200">
                 <button
-                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  onClick={() => setCatalogPage(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="p-2 rounded-lg bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:hover:bg-white transition-colors"
                 >
@@ -366,7 +382,7 @@ export function Catalog() {
                   {Array.from({ length: totalPages }).map((_, index) => (
                     <button
                       key={index}
-                      onClick={() => setCurrentPage(index + 1)}
+                      onClick={() => setCatalogPage(index + 1)}
                       className={`w-10 h-10 rounded-lg text-sm font-bold transition-colors ${
                         currentPage === index + 1
                           ? "bg-purple-600 text-white shadow-md"
@@ -378,7 +394,7 @@ export function Catalog() {
                   ))}
                 </div>
                 <button
-                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  onClick={() => setCatalogPage(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className="p-2 rounded-lg bg-white border border-neutral-200 text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:hover:bg-white transition-colors"
                 >

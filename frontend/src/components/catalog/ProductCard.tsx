@@ -1,5 +1,5 @@
 import { ShoppingCart } from "lucide-react";
-import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { memo, type MouseEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Product } from "../../types";
 import { useStore } from "../../store/useStore";
@@ -8,7 +8,7 @@ interface ProductCardProps {
   product: Product;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
   const addToCart = useStore((state) => state.addToCart);
   const navigate = useNavigate();
   const [wasAdded, setWasAdded] = useState(false);
@@ -92,4 +92,4 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
     </div>
   );
-}
+});
