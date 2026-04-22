@@ -37,6 +37,31 @@ export interface PublicCatalogBootstrapResponse {
   products: PublicCatalogProduct[];
 }
 
+let cachedCatalog: {
+  expiresAt: number;
+  data: PublicCatalogBootstrapResponse;
+} | null = null;
+let pendingCatalogRequest: Promise<PublicCatalogBootstrapResponse> | null = null;
+const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000;
+
 export async function getPublicCatalogBootstrap() {
-  return apiRequest<PublicCatalogBootstrapResponse>('/api/catalog/bootstrap');
+  if (cachedCatalog && cachedCatalog.expiresAt > Date.now()) {
+    return cachedCatalog.data;
+  }
+
+  if (!pendingCatalogRequest) {
+    pendingCatalogRequest = apiRequest<PublicCatalogBootstrapResponse>('/api/catalog/bootstrap')
+      .then((data) => {
+        cachedCatalog = {
+          data,
+          expiresAt: Date.now() + CATALOG_CACHE_TTL_MS,
+        };
+        return data;
+      })
+      .finally(() => {
+        pendingCatalogRequest = null;
+      });
+  }
+
+  return pendingCatalogRequest;
 }

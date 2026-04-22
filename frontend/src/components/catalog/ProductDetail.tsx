@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPublicCatalogBootstrap, PublicCatalogProduct } from "../../services/catalogService";
 import { useStore } from "../../store/useStore";
 import { Product, ProductVariant } from "../../types";
+import { ProductCard } from "./ProductCard";
 
 function toStoreProduct(product: PublicCatalogProduct): Product {
   return {
@@ -34,6 +35,7 @@ export function ProductDetail() {
   const addToCart = useStore((state) => state.addToCart);
   const openCart = useStore((state) => state.openCart);
   const [product, setProduct] = useState<Product | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [selectedVariantId, setSelectedVariantId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +55,7 @@ export function ProductDetail() {
           return;
         }
         const mapped = toStoreProduct(found);
+        setAllProducts(products.map(toStoreProduct));
         setProduct(mapped);
         const firstVariant = mapped.variants?.find((variant) => variant.isActive && variant.stockQuantity > 0);
         setSelectedVariantId(firstVariant?.id ?? mapped.variants?.find((variant) => variant.isActive)?.id ?? "");
@@ -74,6 +77,13 @@ export function ProductDetail() {
     [product]
   );
   const selectedVariant = activeVariants.find((variant) => variant.id === selectedVariantId) ?? null;
+  const suggestedProducts = useMemo(() => {
+    if (!product) return [];
+    const sameCategory = allProducts.filter((item) => item.id !== product.id && item.categoryId === product.categoryId);
+    const sameSubcategory = allProducts.filter((item) => item.id !== product.id && item.subcategoryId === product.subcategoryId);
+    const merged = [...sameSubcategory, ...sameCategory, ...allProducts.filter((item) => item.id !== product.id)];
+    return merged.filter((item, index, list) => list.findIndex((candidate) => candidate.id === item.id) === index).slice(0, 4);
+  }, [allProducts, product]);
   const currentPrice = selectedVariant?.price ?? product?.price ?? 0;
   const availableQuantity = selectedVariant ? selectedVariant.stockQuantity : product?.stockQuantity ?? 0;
   const availabilityLabel = selectedVariant
@@ -109,19 +119,25 @@ export function ProductDetail() {
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          <div className="bg-white border border-neutral-200 rounded-2xl overflow-hidden">
-            {product.imageUrl ? (
-              <img src={product.imageUrl} alt={product.name} className="w-full aspect-square object-cover" referrerPolicy="no-referrer" />
-            ) : (
-              <div className="w-full aspect-square flex items-center justify-center text-neutral-400">Sem imagem</div>
-            )}
+          <div className="flex flex-col gap-5">
+            <div className="bg-white border border-neutral-200 rounded-2xl overflow-hidden">
+              {product.imageUrl ? (
+                <img src={product.imageUrl} alt={product.name} loading="eager" decoding="async" className="w-full aspect-square object-cover" referrerPolicy="no-referrer" />
+              ) : (
+                <div className="w-full aspect-square flex items-center justify-center text-neutral-400">Sem imagem</div>
+              )}
+            </div>
+
+            <section className="bg-white border border-neutral-200 rounded-2xl p-5">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-neutral-500 mb-3">Descrição do produto</h2>
+              <p className="text-sm leading-6 text-neutral-600">{product.description}</p>
+            </section>
           </div>
 
           <section className="flex flex-col gap-6">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-purple-700">{product.category}</p>
               <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight text-neutral-900">{product.name}</h1>
-              <p className="mt-4 text-sm leading-6 text-neutral-600">{product.description}</p>
             </div>
 
             {product.features && product.features.length > 0 && (
@@ -178,6 +194,22 @@ export function ProductDetail() {
             </div>
           </section>
         </div>
+
+        {suggestedProducts.length > 0 && (
+          <section className="mt-12">
+            <div className="flex items-end justify-between gap-4 mb-5">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-purple-700">Sugestões</p>
+                <h2 className="text-2xl font-black tracking-tight text-neutral-900">Outros produtos para você</h2>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+              {suggestedProducts.map((suggestion) => (
+                <ProductCard key={suggestion.id} product={suggestion} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

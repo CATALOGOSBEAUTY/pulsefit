@@ -43,7 +43,6 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
   const [productType, setProductType] = useState(productToEdit?.productType || '');
   const [variation, setVariation] = useState(productToEdit?.variation || '');
   const [featuresText, setFeaturesText] = useState((productToEdit?.features || []).join('\n'));
-  const [imagePrompt, setImagePrompt] = useState(productToEdit?.imagePrompt || '');
   const [catalogStatus, setCatalogStatus] = useState<Product['catalogStatus']>(productToEdit?.catalogStatus || 'draft');
   const [variantsEnabled, setVariantsEnabled] = useState(productToEdit?.variantsEnabled ?? false);
   const [variants, setVariants] = useState<ProductVariant[]>((productToEdit?.variants || []).map((variant) => ({
@@ -140,7 +139,7 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
       productType,
       variation: variation || null,
       features: featuresText.split('\n').map((item) => item.trim()).filter(Boolean),
-      imagePrompt,
+      imagePrompt: productToEdit?.imagePrompt || '',
       catalogStatus,
       images,
       stockQuantity: Math.max(0, Math.floor(Number(stockQuantity || 0))),
@@ -356,10 +355,6 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
                   <textarea rows={4} value={featuresText} onChange={(e) => setFeaturesText(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 resize-none" placeholder="Uma caracteristica por linha" />
                 </div>
 
-                <div className="flex flex-col gap-1.5 md:col-span-3">
-                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Prompt da imagem</label>
-                  <textarea rows={5} value={imagePrompt} onChange={(e) => setImagePrompt(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 resize-none" placeholder="Prompt usado para gerar a imagem do produto" />
-                </div>
               </div>
             </div>
 
