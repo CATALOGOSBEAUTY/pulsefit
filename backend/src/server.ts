@@ -4,6 +4,7 @@ import { env } from './config/env.js';
 import { handleError, ok } from './lib/http.js';
 import { getSupabaseAdmin } from './lib/supabase.js';
 import { authRouter } from './modules/auth/routes.js';
+import { catalogRouter } from './modules/catalog/routes.js';
 import { categoryRouter } from './modules/categories/routes.js';
 import { productRouter } from './modules/products/routes.js';
 import { mediaRouter } from './modules/media/routes.js';
@@ -55,6 +56,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/catalog', catalogRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/products', productRouter);
 app.use('/api/media', mediaRouter);

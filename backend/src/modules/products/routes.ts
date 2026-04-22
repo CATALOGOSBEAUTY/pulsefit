@@ -2,14 +2,12 @@ import { Router } from 'express';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { ApiError, handleError, ok, optionalString, requireNumber, requireString } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
+import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../catalog/service.js';
 import { uploadProductImageDataUrl } from '../storage/upload.js';
 import { mapProduct, type ProductPayload } from './mapper.js';
+import { productSelect } from './select.js';
 
 export const productRouter = Router();
-
-function productSelect() {
-  return '*, category:categories!products_category_id_fkey(id,name,slug,parent_id), subcategory:categories!products_subcategory_id_fkey(id,name,slug,parent_id), product_images(id,url,name,sort_order)';
-}
 
 function parseProductPayload(body: any): ProductPayload {
   const rawSubcategoryId = body.subcategoryId ?? body.subcategory_id;
@@ -73,6 +71,13 @@ async function saveImages(productId: string, images: string[], title: string) {
 productRouter.get('/', async (req, res) => {
   try {
     const includeInactive = req.query.includeInactive === 'true';
+
+    if (!includeInactive) {
+      res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+      const snapshot = await loadPublicCatalogSnapshot();
+      return ok(res, snapshot.products);
+    }
+
     let query = getSupabaseAdmin()
       .from('products')
       .select(productSelect())
@@ -129,6 +134,7 @@ productRouter.post('/', requireAuth, async (req, res) => {
     const { data: created, error: fetchError } = await getSupabaseAdmin().from('products').select(productSelect()).eq('id', data.id).single();
     if (fetchError) throw fetchError;
 
+    invalidatePublicCatalogCache();
     return ok(res, mapProduct(created), 201);
   } catch (error) {
     return handleError(res, error);
@@ -166,6 +172,7 @@ productRouter.put('/:id', requireAuth, async (req, res) => {
     const { data: updated, error: fetchError } = await getSupabaseAdmin().from('products').select(productSelect()).eq('id', data.id).single();
     if (fetchError) throw fetchError;
 
+    invalidatePublicCatalogCache();
     return ok(res, mapProduct(updated));
   } catch (error) {
     return handleError(res, error);
@@ -194,6 +201,7 @@ productRouter.patch('/:id/status', requireAuth, async (req, res) => {
       .single();
 
     if (error) throw error;
+    invalidatePublicCatalogCache();
     return ok(res, mapProduct(data));
   } catch (error) {
     return handleError(res, error);
@@ -204,6 +212,7 @@ productRouter.delete('/:id', requireAuth, async (req, res) => {
   try {
     const { error } = await getSupabaseAdmin().from('products').delete().eq('id', req.params.id);
     if (error) throw error;
+    invalidatePublicCatalogCache();
     return ok(res, { ok: true });
   } catch (error) {
     return handleError(res, error);

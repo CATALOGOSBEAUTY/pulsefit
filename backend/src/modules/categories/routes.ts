@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { ApiError, handleError, ok, requireString } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
+import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../catalog/service.js';
+import { mapCategory } from './mapper.js';
 
 export const categoryRouter = Router();
 
@@ -13,20 +15,6 @@ function slugify(value: string) {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/[^\w-]+/g, '');
-}
-
-function mapCategory(row: any) {
-  return {
-    id: row.id,
-    name: row.name,
-    slug: row.slug,
-    parent_id: row.parent_id ?? null,
-    parentId: row.parent_id ?? null,
-    sort_order: row.sort_order ?? 0,
-    is_active: row.is_active ?? true,
-    created_at: row.created_at,
-    updated_at: row.updated_at,
-  };
 }
 
 async function buildSlug(name: string, parentId?: string | null) {
@@ -67,6 +55,13 @@ async function ensureNoCategoryUsage(categoryId: string) {
 categoryRouter.get('/', async (req, res) => {
   try {
     const includeInactive = req.query.includeInactive === 'true';
+
+    if (!includeInactive) {
+      res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+      const snapshot = await loadPublicCatalogSnapshot();
+      return ok(res, snapshot.categories);
+    }
+
     let query = getSupabaseAdmin()
       .from('categories')
       .select('*')
@@ -99,6 +94,7 @@ categoryRouter.post('/', requireAuth, async (req, res) => {
       .single();
 
     if (error) throw error;
+    invalidatePublicCatalogCache();
     return ok(res, mapCategory(data), 201);
   } catch (error) {
     return handleError(res, error);
@@ -122,6 +118,7 @@ categoryRouter.put('/:id', requireAuth, async (req, res) => {
     if (error) throw error;
     if (!data) throw new ApiError(404, 'Categoria nao encontrada.');
 
+    invalidatePublicCatalogCache();
     return ok(res, mapCategory(data));
   } catch (error) {
     return handleError(res, error);
@@ -133,6 +130,7 @@ categoryRouter.delete('/:id', requireAuth, async (req, res) => {
     await ensureNoCategoryUsage(req.params.id);
     const { error } = await getSupabaseAdmin().from('categories').delete().eq('id', req.params.id);
     if (error) throw error;
+    invalidatePublicCatalogCache();
     return ok(res, { ok: true });
   } catch (error) {
     return handleError(res, error);
