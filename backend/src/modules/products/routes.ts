@@ -6,6 +6,7 @@ import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../cata
 import { uploadProductImageDataUrl } from '../storage/upload.js';
 import { mapProduct, type ProductPayload } from './mapper.js';
 import { productSelect } from './select.js';
+import { parseProductVariants, type ProductVariantPayload } from './variants.js';
 
 export const productRouter = Router();
 
@@ -39,6 +40,8 @@ function parseProductPayload(body: any): ProductPayload {
     isPromo: body.isPromo ?? body.is_promo ?? false,
     isNew: body.isNew ?? body.is_new ?? false,
     stockQuantity: Number(body.stockQuantity ?? body.stock_quantity ?? 0),
+    variantsEnabled: Boolean(body.variantsEnabled ?? body.variants_enabled ?? false),
+    variants: parseProductVariants(body.variants),
   };
 }
 
@@ -81,6 +84,26 @@ async function saveImages(productId: string, images: string[], title: string) {
   }));
 
   const { error } = await supabase.from('product_images').insert(rows);
+  if (error) throw error;
+}
+
+async function saveVariants(productId: string, variants: ProductVariantPayload[]) {
+  const supabase = getSupabaseAdmin();
+  await supabase.from('product_variants').delete().eq('product_id', productId);
+
+  if (variants.length === 0) return;
+
+  const rows = variants.map((variant) => ({
+    product_id: productId,
+    label: variant.label || variant.options.map((option) => `${option.name}: ${option.value}`).join(' / '),
+    sku: variant.sku || null,
+    options: variant.options,
+    price: variant.price ?? null,
+    stock_quantity: variant.stockQuantity,
+    is_active: variant.isActive,
+  }));
+
+  const { error } = await supabase.from('product_variants').insert(rows);
   if (error) throw error;
 }
 
@@ -147,12 +170,14 @@ productRouter.post('/', requireAuth, async (req, res) => {
         is_promo: payload.isPromo,
         is_new: payload.isNew,
         stock_quantity: payload.stockQuantity ?? 0,
+        variants_enabled: payload.variantsEnabled ?? false,
       })
       .select('*')
       .single();
 
     if (error) throw error;
     await saveImages(data.id, payload.images, payload.title);
+    await saveVariants(data.id, payload.variants ?? []);
 
     const { data: created, error: fetchError } = await getSupabaseAdmin().from('products').select(productSelect()).eq('id', data.id).single();
     if (fetchError) throw fetchError;
@@ -188,6 +213,7 @@ productRouter.put('/:id', requireAuth, async (req, res) => {
         is_promo: payload.isPromo,
         is_new: payload.isNew,
         stock_quantity: payload.stockQuantity ?? 0,
+        variants_enabled: payload.variantsEnabled ?? false,
         updated_at: new Date().toISOString(),
       })
       .eq('id', req.params.id)
@@ -198,6 +224,7 @@ productRouter.put('/:id', requireAuth, async (req, res) => {
     if (!data) throw new ApiError(404, 'Produto nao encontrado.');
 
     await saveImages(data.id, payload.images, payload.title);
+    await saveVariants(data.id, payload.variants ?? []);
 
     const { data: updated, error: fetchError } = await getSupabaseAdmin().from('products').select(productSelect()).eq('id', data.id).single();
     if (fetchError) throw fetchError;

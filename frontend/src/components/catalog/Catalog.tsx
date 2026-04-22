@@ -82,6 +82,7 @@ export function Catalog() {
         setStoreProducts(
           products.map((product) => ({
             id: product.id,
+            slug: product.slug ?? null,
             name: product.title,
             description: product.description,
             price: product.price,
@@ -89,6 +90,11 @@ export function Catalog() {
             categoryId: product.categoryId,
             subcategoryId: product.subcategoryId ?? null,
             imageUrl: product.images.length > 0 ? product.images[0] : "",
+            images: product.images,
+            features: product.features ?? [],
+            stockQuantity: product.stockQuantity ?? 0,
+            variantsEnabled: product.variantsEnabled ?? false,
+            variants: product.variants ?? [],
           }))
         );
       })

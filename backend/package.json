@@ -11,9 +11,15 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "lint": "tsc --noEmit -p tsconfig.json",
+    "test": "tsx --test src/modules/orders/orderCode.test.ts src/modules/products/variants.test.ts",
     "hash-password": "tsx src/scripts/hashAdminPassword.ts",
     "catalog:import": "tsx src/scripts/importMasterCatalog.ts",
-    "catalog:dry-run": "tsx src/scripts/importMasterCatalog.ts --dry-run"
+    "catalog:dry-run": "tsx src/scripts/importMasterCatalog.ts --dry-run",
+    "catalog:validate": "tsx src/scripts/validateCatalogSafety.ts",
+    "catalog:export": "tsx src/scripts/exportCatalogBatch.ts",
+    "catalog:apply-images": "tsx src/scripts/applyCatalogImages.ts",
+    "catalog:activate": "tsx src/scripts/activateCatalogBatch.ts",
+    "catalog:cleanup-empty-feminino": "tsx src/scripts/cleanupEmptyFeminineSubcategories.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.104.0",

@@ -1,6 +1,6 @@
 import { type ChangeEvent, type FormEvent, useEffect, useState, useRef } from 'react';
-import { X, UploadCloud } from 'lucide-react';
-import { useProductStore, Product } from '../store/useProductStore';
+import { Plus, Trash2, X, UploadCloud } from 'lucide-react';
+import { useProductStore, Product, ProductVariant } from '../store/useProductStore';
 import { Category, useCategoryStore } from '../../categories/store/useCategoryStore';
 
 interface ProductFormModalProps {
@@ -12,18 +12,45 @@ function getParentId(category: Category) {
   return category.parent_id ?? category.parentId ?? null;
 }
 
+const quickSizes = ['PP', 'P', 'M', 'G', 'GG', 'XG', 'XXG'];
+
+function createVariant(size?: string): ProductVariant {
+  return {
+    label: size ? `Tamanho: ${size}` : '',
+    sku: '',
+    options: size ? [{ name: 'Tamanho', value: size }] : [{ name: '', value: '' }],
+    price: null,
+    stockQuantity: 0,
+    isActive: true,
+  };
+}
+
 export function ProductFormModal({ onClose, productToEdit }: ProductFormModalProps) {
   const { addProduct, updateProduct } = useProductStore();
   const categories = useCategoryStore(state => state.categories);
   const fetchCategories = useCategoryStore(state => state.fetchCategories);
   
   const [title, setTitle] = useState(productToEdit?.title || '');
+  const [slug, setSlug] = useState(productToEdit?.slug || '');
   const [description, setDescription] = useState(productToEdit?.description || '');
   const [price, setPrice] = useState(productToEdit?.price.toString() || '');
+  const [stockQuantity, setStockQuantity] = useState(String(productToEdit?.stockQuantity ?? 0));
   const rootCategories = categories.filter((category) => !getParentId(category));
   const [categoryId, setCategoryId] = useState(productToEdit?.categoryId || '');
   const [subcategoryId, setSubcategoryId] = useState(productToEdit?.subcategoryId || '');
   const [images, setImages] = useState<string[]>(productToEdit?.images || []);
+  const [audience, setAudience] = useState<Product['audience'] | ''>(productToEdit?.audience || '');
+  const [productType, setProductType] = useState(productToEdit?.productType || '');
+  const [variation, setVariation] = useState(productToEdit?.variation || '');
+  const [featuresText, setFeaturesText] = useState((productToEdit?.features || []).join('\n'));
+  const [imagePrompt, setImagePrompt] = useState(productToEdit?.imagePrompt || '');
+  const [catalogStatus, setCatalogStatus] = useState<Product['catalogStatus']>(productToEdit?.catalogStatus || 'draft');
+  const [variantsEnabled, setVariantsEnabled] = useState(productToEdit?.variantsEnabled ?? false);
+  const [variants, setVariants] = useState<ProductVariant[]>((productToEdit?.variants || []).map((variant) => ({
+    ...variant,
+    price: variant.price ?? null,
+    options: variant.options?.length ? variant.options : [{ name: '', value: '' }],
+  })));
   
   const [isActive, setIsActive] = useState(productToEdit?.isActive ?? true);
   const [isFeatured, setIsFeatured] = useState(productToEdit?.isFeatured ?? false);
@@ -103,12 +130,27 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
     }
 
     const productData = {
+      slug: slug.trim() || null,
       title,
       description,
       price: parsedPrice,
       categoryId,
       subcategoryId: subcategoryId || null,
+      audience: audience || null,
+      productType,
+      variation: variation || null,
+      features: featuresText.split('\n').map((item) => item.trim()).filter(Boolean),
+      imagePrompt,
+      catalogStatus,
       images,
+      stockQuantity: Math.max(0, Math.floor(Number(stockQuantity || 0))),
+      variantsEnabled,
+      variants: variantsEnabled ? variants.map((variant) => ({
+        ...variant,
+        label: variant.label || variant.options.map((option) => `${option.name}: ${option.value}`).join(' / '),
+        stockQuantity: Math.max(0, Math.floor(Number(variant.stockQuantity || 0))),
+        price: variant.price === null || variant.price === undefined ? null : Number(variant.price),
+      })) : [],
       isActive,
       isFeatured,
       isPromo,
@@ -126,6 +168,25 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
       console.error(err);
       setError("Erro ao tentar salvar o produto.");
     }
+  };
+
+  const addSizeVariant = (size: string) => {
+    if (variants.some((variant) => variant.options.some((option) => option.name === 'Tamanho' && option.value === size))) return;
+    setVariants([...variants, createVariant(size)]);
+    setVariantsEnabled(true);
+  };
+
+  const updateVariant = (index: number, updates: Partial<ProductVariant>) => {
+    setVariants(variants.map((variant, currentIndex) => currentIndex === index ? { ...variant, ...updates } : variant));
+  };
+
+  const updateVariantOption = (index: number, field: 'name' | 'value', value: string) => {
+    setVariants(variants.map((variant, currentIndex) => {
+      if (currentIndex !== index) return variant;
+      const options = variant.options.length > 0 ? variant.options : [{ name: '', value: '' }];
+      const nextOptions = options.map((option, optionIndex) => optionIndex === 0 ? { ...option, [field]: value } : option);
+      return { ...variant, options: nextOptions };
+    }));
   };
 
   return (
@@ -159,10 +220,20 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
                   <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Nome do Produto *</label>
                   <input required type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="Ex: Legging Alta Performance" />
                 </div>
+
+                <div className="flex flex-col gap-1.5 md:col-span-2">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Slug interno</label>
+                  <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="legging-alta-performance" />
+                </div>
                 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Preço (R$) *</label>
                   <input required type="number" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="199.90" />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Quantidade base</label>
+                  <input type="number" min="0" step="1" value={stockQuantity} onChange={(e) => setStockQuantity(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="0" />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
@@ -191,6 +262,103 @@ export function ProductFormModal({ onClose, productToEdit }: ProductFormModalPro
                 <div className="flex flex-col gap-1.5 md:col-span-2">
                   <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Descrição</label>
                   <textarea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 resize-none" placeholder="Detalhes do produto, tecido, uso..." />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-5">
+              <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-2">Estoque e Variações</h3>
+              <label className="flex items-center gap-3 p-4 border border-neutral-200 rounded-xl cursor-pointer hover:bg-neutral-50 transition-colors">
+                <input type="checkbox" checked={variantsEnabled} onChange={(e) => setVariantsEnabled(e.target.checked)} className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 accent-purple-600" />
+                <div>
+                  <p className="text-sm font-bold text-neutral-900">Usar variações neste produto</p>
+                  <p className="text-xs text-neutral-500">Tamanho, cor, sabor, modelo ou qualquer variação com estoque próprio.</p>
+                </div>
+              </label>
+
+              {variantsEnabled && (
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-wrap gap-2">
+                    {quickSizes.map((size) => (
+                      <button key={size} type="button" onClick={() => addSizeVariant(size)} className="px-3 py-2 rounded-lg border border-neutral-200 bg-white text-xs font-bold text-neutral-700 hover:border-purple-300 hover:text-purple-700">
+                        {size}
+                      </button>
+                    ))}
+                    <button type="button" onClick={() => setVariants([...variants, createVariant()])} className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-purple-200 bg-purple-50 text-xs font-bold text-purple-700 hover:bg-purple-100">
+                      <Plus className="w-3.5 h-3.5" /> Variação livre
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-3">
+                    {variants.length === 0 && (
+                      <div className="p-4 rounded-xl border border-dashed border-neutral-200 text-sm text-neutral-500">
+                        Adicione tamanhos rápidos ou uma variação livre.
+                      </div>
+                    )}
+
+                    {variants.map((variant, index) => (
+                      <div key={`${variant.id ?? 'new'}-${index}`} className="grid grid-cols-1 lg:grid-cols-12 gap-3 p-4 rounded-xl border border-neutral-200 bg-neutral-50">
+                        <input value={variant.options[0]?.name ?? ''} onChange={(e) => updateVariantOption(index, 'name', e.target.value)} className="lg:col-span-2 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Tipo" />
+                        <input value={variant.options[0]?.value ?? ''} onChange={(e) => updateVariantOption(index, 'value', e.target.value)} className="lg:col-span-2 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Valor" />
+                        <input value={variant.label} onChange={(e) => updateVariant(index, { label: e.target.value })} className="lg:col-span-3 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Rótulo exibido" />
+                        <input type="number" min="0" step="1" value={variant.stockQuantity} onChange={(e) => updateVariant(index, { stockQuantity: Number(e.target.value) })} className="lg:col-span-1 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Qtd" />
+                        <input type="number" min="0" step="0.01" value={variant.price ?? ''} onChange={(e) => updateVariant(index, { price: e.target.value === '' ? null : Number(e.target.value) })} className="lg:col-span-2 px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm focus:outline-none focus:border-purple-500" placeholder="Preço opc." />
+                        <div className="lg:col-span-2 flex items-center justify-end gap-2">
+                          <label className="flex items-center gap-2 text-xs font-bold text-neutral-600">
+                            <input type="checkbox" checked={variant.isActive} onChange={(e) => updateVariant(index, { isActive: e.target.checked })} className="accent-purple-600" />
+                            Ativa
+                          </label>
+                          <button type="button" onClick={() => setVariants(variants.filter((_, currentIndex) => currentIndex !== index))} className="p-2 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-5">
+              <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest border-b border-neutral-100 pb-2">Metadados de Catalogo</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Publico</label>
+                  <select value={audience ?? ''} onChange={(e) => setAudience(e.target.value as Product['audience'] | '')} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500">
+                    <option value="">Sem publico</option>
+                    <option value="feminino">Feminino</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="suplemento">Suplemento</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Status editorial</label>
+                  <select value={catalogStatus} onChange={(e) => setCatalogStatus(e.target.value as 'draft' | 'ready' | 'live')} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500">
+                    <option value="draft">Rascunho</option>
+                    <option value="ready">Pronto</option>
+                    <option value="live">Publicado</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Tipo</label>
+                  <input type="text" value={productType} onChange={(e) => setProductType(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="legging, top, whey..." />
+                </div>
+
+                <div className="flex flex-col gap-1.5 md:col-span-3">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Variacao</label>
+                  <input type="text" value={variation} onChange={(e) => setVariation(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500" placeholder="Alta sustentacao, manga longa, sabor chocolate..." />
+                </div>
+
+                <div className="flex flex-col gap-1.5 md:col-span-3">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Caracteristicas</label>
+                  <textarea rows={4} value={featuresText} onChange={(e) => setFeaturesText(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 resize-none" placeholder="Uma caracteristica por linha" />
+                </div>
+
+                <div className="flex flex-col gap-1.5 md:col-span-3">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-widest">Prompt da imagem</label>
+                  <textarea rows={5} value={imagePrompt} onChange={(e) => setImagePrompt(e.target.value)} className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 resize-none" placeholder="Prompt usado para gerar a imagem do produto" />
                 </div>
               </div>
             </div>

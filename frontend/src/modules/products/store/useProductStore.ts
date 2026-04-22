@@ -23,8 +23,20 @@ export interface Product {
   isPromo: boolean;
   isNew: boolean;
   stockQuantity?: number;
+  variantsEnabled?: boolean;
+  variants?: ProductVariant[];
   created_at: string;
   updated_at?: string;
+}
+
+export interface ProductVariant {
+  id?: string;
+  label: string;
+  sku?: string;
+  options: Array<{ name: string; value: string }>;
+  price?: number | null;
+  stockQuantity: number;
+  isActive: boolean;
 }
 
 interface ProductState {

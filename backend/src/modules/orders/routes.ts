@@ -2,12 +2,16 @@ import { Router } from 'express';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { ApiError, handleError, ok, optionalString, requireNumber, requireString } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
+import { generateOrderCode } from './orderCode.js';
 
 export const orderRouter = Router();
 
 interface NormalizedOrderItem {
   product_id: string;
+  product_variant_id?: string | null;
   product_name: string;
+  variant_label?: string | null;
+  variant_options?: Array<{ name: string; value: string }>;
   unit_price: number;
   quantity: number;
   subtotal: number;
@@ -15,16 +19,25 @@ interface NormalizedOrderItem {
 
 function formatWhatsAppMessage(order: any, items: any[]) {
   let message = '*NOVO PEDIDO - CATALOGO FITNESS*\\n\\n';
+  message += `*TOKEN DO PEDIDO:* ${order.order_code}\\n`;
+  message += `Tipo: ${order.fulfillment_type === 'pickup' ? 'Retirada na loja' : 'Entrega'}\\n`;
+  message += `Pagamento: ${order.payment_method === 'cash' ? 'Dinheiro' : order.payment_method === 'card' ? 'Cartao' : 'Pix'}\\n\\n`;
   message += '*DADOS DO CLIENTE*\\n';
   message += `Nome: ${order.customer_name}\\n`;
-  message += `Endereco: ${order.address}, ${order.number}${order.complement ? ` - ${order.complement}` : ''}\\n`;
-  message += `Bairro: ${order.neighborhood}\\n`;
-  message += `Regiao: ${order.region}\\n`;
-  message += `CEP: ${order.cep}\\n\\n`;
+  message += `WhatsApp: ${order.customer_phone || 'Nao informado'}\\n`;
+  if (order.fulfillment_type === 'delivery') {
+    message += `Endereco: ${order.address}, ${order.number}${order.complement ? ` - ${order.complement}` : ''}\\n`;
+    message += `Bairro: ${order.neighborhood}\\n`;
+    message += `Cidade/UF: ${order.city || order.region}${order.state ? `/${order.state}` : ''}\\n`;
+    message += `CEP: ${order.cep}\\n`;
+    if (order.reference_point) message += `Referencia: ${order.reference_point}\\n`;
+  }
+  message += '\\n';
   message += 'Ola, tenho interesse nos produtos abaixo que vi no catalogo fitness:\\n\\n';
 
   items.forEach((item) => {
-    message += `- ${item.quantity}x ${item.product_name} - R$ ${Number(item.subtotal).toFixed(2)}\\n`;
+    const variant = item.variant_label ? ` (${item.variant_label})` : '';
+    message += `- ${item.quantity}x ${item.product_name}${variant} - R$ ${Number(item.subtotal).toFixed(2)}\\n`;
   });
 
   message += `\\n*TOTAL DO PEDIDO: R$ ${Number(order.total_amount).toFixed(2)}*\\n\\n`;
@@ -47,7 +60,7 @@ orderRouter.post('/', async (req, res) => {
     const productIds = items.map((item: any) => requireString(item.productId ?? item.product?.id, 'productId'));
     const { data: products, error: productsError } = await getSupabaseAdmin()
       .from('products')
-      .select('id,title,price,is_active')
+      .select('id,title,price,is_active,stock_quantity,product_variants(id,label,options,price,stock_quantity,is_active)')
       .in('id', productIds)
       .eq('is_active', true);
 
@@ -60,28 +73,62 @@ orderRouter.post('/', async (req, res) => {
       const productId = requireString(item.productId ?? item.product?.id, 'productId');
       const product = products.find((entry) => entry.id === productId);
       if (!product) throw new ApiError(400, 'Produto indisponivel.');
+      const variantId = optionalString(item.variantId ?? item.variant?.id);
+      const variants = Array.isArray((product as any).product_variants) ? (product as any).product_variants : [];
+      const selectedVariant = variantId ? variants.find((variant: any) => variant.id === variantId && variant.is_active) : null;
+      if (variantId && !selectedVariant) throw new ApiError(400, 'Variacao indisponivel.');
       const quantity = Math.max(1, Math.floor(requireNumber(item.quantity, 'quantity')));
-      const subtotal = Number(product.price) * quantity;
+      if (selectedVariant && Number(selectedVariant.stock_quantity ?? 0) < quantity) {
+        throw new ApiError(400, `Estoque insuficiente para ${product.title} - ${selectedVariant.label}.`);
+      }
+      const unitPrice = selectedVariant?.price !== null && selectedVariant?.price !== undefined
+        ? Number(selectedVariant.price)
+        : Number(product.price);
+      const subtotal = unitPrice * quantity;
 
       return {
         product_id: product.id,
+        product_variant_id: selectedVariant?.id ?? null,
         product_name: product.title,
-        unit_price: Number(product.price),
+        variant_label: selectedVariant?.label ?? null,
+        variant_options: Array.isArray(selectedVariant?.options) ? selectedVariant.options : [],
+        unit_price: unitPrice,
         quantity,
         subtotal,
       };
     });
 
     const total = normalizedItems.reduce((sum: number, item: NormalizedOrderItem) => sum + item.subtotal, 0);
+    const fulfillmentType = customer.fulfillmentType === 'pickup' || customer.fulfillment_type === 'pickup' ? 'pickup' : 'delivery';
+    const paymentMethod = ['cash', 'pix', 'card'].includes(customer.paymentMethod ?? customer.payment_method)
+      ? customer.paymentMethod ?? customer.payment_method
+      : 'pix';
+    const customerName = requireString(customer.fullName ?? customer.customer_name, 'fullName');
+    const customerPhone = requireString(customer.phone ?? customer.customer_phone, 'phone');
+
+    if (fulfillmentType === 'delivery') {
+      requireString(customer.cep, 'cep');
+      requireString(customer.address, 'address');
+      requireString(customer.number, 'number');
+      requireString(customer.neighborhood, 'neighborhood');
+      requireString(customer.city ?? customer.region, 'city');
+    }
+
     const orderPayload = {
-      customer_name: requireString(customer.fullName ?? customer.customer_name, 'fullName'),
-      customer_phone: optionalString(customer.phone ?? customer.customer_phone),
-      cep: requireString(customer.cep, 'cep'),
-      address: requireString(customer.address, 'address'),
-      number: requireString(customer.number, 'number'),
+      order_code: generateOrderCode(),
+      customer_name: customerName,
+      customer_phone: customerPhone,
+      fulfillment_type: fulfillmentType,
+      payment_method: paymentMethod,
+      cep: optionalString(customer.cep),
+      address: optionalString(customer.address),
+      number: optionalString(customer.number),
       complement: optionalString(customer.complement),
-      neighborhood: requireString(customer.neighborhood, 'neighborhood'),
-      region: requireString(customer.region, 'region'),
+      neighborhood: optionalString(customer.neighborhood),
+      region: optionalString(customer.region ?? customer.city),
+      city: optionalString(customer.city),
+      state: optionalString(customer.state),
+      reference_point: optionalString(customer.referencePoint ?? customer.reference_point),
       total_amount: total,
       status: 'new',
     };

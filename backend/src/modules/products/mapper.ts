@@ -17,6 +17,16 @@ export interface ProductPayload {
   isPromo: boolean;
   isNew: boolean;
   stockQuantity?: number;
+  variantsEnabled?: boolean;
+  variants?: Array<{
+    id?: string;
+    label?: string;
+    sku?: string;
+    options: Array<{ name: string; value: string }>;
+    price?: number | null;
+    stockQuantity: number;
+    isActive: boolean;
+  }>;
 }
 
 export function mapProduct(row: any) {
@@ -24,6 +34,17 @@ export function mapProduct(row: any) {
     ? row.product_images
       .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
       .map((image: any) => image.url)
+    : [];
+  const variants = Array.isArray(row.product_variants)
+    ? row.product_variants.map((variant: any) => ({
+      id: variant.id,
+      label: variant.label,
+      sku: variant.sku ?? '',
+      options: Array.isArray(variant.options) ? variant.options : [],
+      price: variant.price === null || variant.price === undefined ? null : Number(variant.price),
+      stockQuantity: Number(variant.stock_quantity ?? 0),
+      isActive: Boolean(variant.is_active),
+    }))
     : [];
 
   return {
@@ -48,6 +69,8 @@ export function mapProduct(row: any) {
     isPromo: Boolean(row.is_promo),
     isNew: Boolean(row.is_new),
     stockQuantity: Number(row.stock_quantity ?? 0),
+    variantsEnabled: Boolean(row.variants_enabled),
+    variants,
     created_at: row.created_at,
     updated_at: row.updated_at,
   };

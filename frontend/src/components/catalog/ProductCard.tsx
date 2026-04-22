@@ -1,4 +1,6 @@
 import { ShoppingCart } from "lucide-react";
+import { type MouseEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { Product } from "../../types";
 import { useStore } from "../../store/useStore";
 
@@ -9,20 +11,29 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const addToCart = useStore((state) => state.addToCart);
   const openCart = useStore((state) => state.openCart);
+  const navigate = useNavigate();
 
-  const handleAdd = () => {
+  const openProduct = () => {
+    navigate(`/produto/${product.slug || product.id}`);
+  };
+
+  const handleAdd = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (product.variantsEnabled && product.variants && product.variants.length > 0) {
+      openProduct();
+      return;
+    }
     addToCart(product);
-    openCart(); // Opcional: abre o carrinho direto após adicionar para melhorar fluxo de check-out
+    openCart();
   };
 
   return (
-    <div className="group flex flex-col h-full bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:-translate-y-1.5 hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-600 transition-all duration-300">
-      {/* Imagem do Produto */}
+    <div onClick={openProduct} className="group flex flex-col h-full bg-white border border-neutral-200 rounded-2xl overflow-hidden hover:-translate-y-1.5 hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-600 transition-all duration-300 cursor-pointer">
       <div className="relative aspect-square overflow-hidden bg-neutral-100 border-b border-neutral-100">
         {product.imageUrl ? (
-          <img 
-            src={product.imageUrl} 
-            alt={product.name} 
+          <img
+            src={product.imageUrl}
+            alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             referrerPolicy="no-referrer"
           />
@@ -38,7 +49,6 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
 
-      {/* Informações */}
       <div className="p-5 flex flex-col flex-1">
         <h3 className="font-bold text-base text-neutral-900 leading-tight mb-2 group-hover:text-purple-700 transition-colors">
           {product.name}
@@ -55,10 +65,10 @@ export function ProductCard({ product }: ProductCardProps) {
             </span>
           </div>
 
-          <button 
+          <button
             onClick={handleAdd}
             className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-800 to-purple-500 text-white flex items-center justify-center hover:from-purple-700 hover:to-purple-400 hover:scale-105 active:scale-95 transition-all shadow-md shadow-purple-500/20"
-            aria-label="Adicionar ao carrinho"
+            aria-label={product.variantsEnabled ? "Escolher variacao" : "Adicionar ao carrinho"}
           >
             <ShoppingCart className="w-4 h-4 ml-[-2px]" />
           </button>

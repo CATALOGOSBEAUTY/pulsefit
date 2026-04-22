@@ -30,6 +30,20 @@ create table if not exists public.products (
   is_promo boolean not null default false,
   is_new boolean not null default false,
   stock_quantity integer not null default 0 check (stock_quantity >= 0),
+  variants_enabled boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.product_variants (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid not null references public.products(id) on delete cascade,
+  label text not null,
+  sku text,
+  options jsonb not null default '[]'::jsonb,
+  price numeric(12,2) check (price is null or price >= 0),
+  stock_quantity integer not null default 0 check (stock_quantity >= 0),
+  is_active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -58,12 +72,18 @@ create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   customer_name text not null,
   customer_phone text,
-  cep text not null,
-  address text not null,
-  number text not null,
+  cep text,
+  address text,
+  number text,
   complement text,
-  neighborhood text not null,
-  region text not null,
+  neighborhood text,
+  region text,
+  city text,
+  state text,
+  reference_point text,
+  fulfillment_type text not null default 'delivery' check (fulfillment_type in ('delivery', 'pickup')),
+  payment_method text not null default 'pix' check (payment_method in ('cash', 'pix', 'card')),
+  order_code text unique,
   total_amount numeric(12,2) not null check (total_amount >= 0),
   status text not null default 'new' check (status in ('new', 'confirmed', 'paid', 'sent', 'cancelled')),
   created_at timestamptz not null default now(),
@@ -74,7 +94,10 @@ create table if not exists public.order_items (
   id uuid primary key default gen_random_uuid(),
   order_id uuid not null references public.orders(id) on delete cascade,
   product_id uuid references public.products(id) on delete set null,
+  product_variant_id uuid references public.product_variants(id) on delete set null,
   product_name text not null,
+  variant_label text,
+  variant_options jsonb not null default '[]'::jsonb,
   unit_price numeric(12,2) not null check (unit_price >= 0),
   quantity integer not null check (quantity > 0),
   subtotal numeric(12,2) not null check (subtotal >= 0),
@@ -95,7 +118,10 @@ create index if not exists idx_categories_parent_id on public.categories(parent_
 create index if not exists idx_products_active on public.products(is_active);
 create index if not exists idx_products_featured on public.products(is_featured);
 create index if not exists idx_product_images_product_id on public.product_images(product_id);
+create index if not exists idx_product_variants_product_id on public.product_variants(product_id);
+create index if not exists idx_product_variants_active on public.product_variants(is_active);
 create index if not exists idx_orders_created_at on public.orders(created_at desc);
+create index if not exists idx_orders_order_code on public.orders(order_code);
 create index if not exists idx_order_items_order_id on public.order_items(order_id);
 
 create or replace function public.set_updated_at()
@@ -116,6 +142,11 @@ for each row execute function public.set_updated_at();
 drop trigger if exists trg_products_updated_at on public.products;
 create trigger trg_products_updated_at
 before update on public.products
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_product_variants_updated_at on public.product_variants;
+create trigger trg_product_variants_updated_at
+before update on public.product_variants
 for each row execute function public.set_updated_at();
 
 drop trigger if exists trg_orders_updated_at on public.orders;

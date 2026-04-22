@@ -11,6 +11,8 @@ import { HighlightsView } from './modules/highlights/views/HighlightsView';
 import { Header } from './components/layout/Header';
 import { Hero } from './components/hero/Hero';
 import { Catalog } from './components/catalog/Catalog';
+import { ProductDetail } from './components/catalog/ProductDetail';
+import { CartDrawer } from './components/cart/CartDrawer';
 import { requestAdminGate } from './services/authService';
 import { useStore } from './store/useStore';
 
@@ -26,7 +28,8 @@ const publicTabByPath: Record<string, PublicTab> = {
 function PublicStore() {
   const location = useLocation();
   const { activeTab, setActiveTab } = useStore();
-  const routedTab = publicTabByPath[location.pathname] ?? 'catalogo';
+  const isProductPage = location.pathname.startsWith('/produto/');
+  const routedTab = isProductPage ? 'catalogo' : publicTabByPath[location.pathname] ?? 'catalogo';
 
   useEffect(() => {
     if (activeTab !== routedTab) {
@@ -39,13 +42,14 @@ function PublicStore() {
       <Header />
       <main className="flex-1 flex flex-col">
         {routedTab === 'inicio' && <Hero />}
-        {routedTab === 'catalogo' && <Catalog />}
+        {isProductPage ? <ProductDetail /> : routedTab === 'catalogo' && <Catalog />}
         {routedTab === 'contato' && (
           <div className="flex-1 flex items-center justify-center p-8 text-neutral-500">
              Módulo de Contato será inserido aqui.
           </div>
         )}
       </main>
+      <CartDrawer />
     </div>
   );
 }
@@ -98,6 +102,7 @@ export default function App() {
         <Route path="/" element={<Navigate to="/catalogo" replace />} />
         <Route path="/inicio" element={<PublicStore />} />
         <Route path="/catalogo" element={<PublicStore />} />
+        <Route path="/produto/:slug" element={<PublicStore />} />
         <Route path="/contato" element={<PublicStore />} />
 
         {/* Rota pública de login admin */}
