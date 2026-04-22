@@ -54,24 +54,46 @@ export async function loadPublicCatalogSnapshot(forceRefresh = false): Promise<P
   const orderRows = ((ordersResult.data ?? []) as unknown) as OrderRelevanceSource[];
 
   const relevanceByProductId = buildProductRelevanceMap(productRows, orderRows);
+  const mappedProducts = productRows.map((row) => {
+    const mappedProduct = mapProduct(row);
+    const relevance = relevanceByProductId[mappedProduct.id] ?? {
+      score: 0,
+      unitsSold: 0,
+      orderCount: 0,
+    };
+
+    return {
+      ...mappedProduct,
+      relevanceScore: relevance.score,
+      relevanceUnitsSold: relevance.unitsSold,
+      relevanceOrderCount: relevance.orderCount,
+    };
+  });
+
+  const visibleCategoryIds = new Set<string>();
+  const categoryRows = (categoriesResult.data ?? []) as any[];
+  const parentIdByCategoryId = new Map(categoryRows.map((row) => [row.id, row.parent_id ?? null] as const));
+
+  for (const product of mappedProducts) {
+    visibleCategoryIds.add(product.categoryId);
+    if (product.subcategoryId) {
+      visibleCategoryIds.add(product.subcategoryId);
+    }
+  }
+
+  for (const categoryId of Array.from(visibleCategoryIds)) {
+    let parentId = parentIdByCategoryId.get(categoryId) ?? null;
+    while (parentId) {
+      visibleCategoryIds.add(parentId);
+      parentId = parentIdByCategoryId.get(parentId) ?? null;
+    }
+  }
 
   const snapshot = {
-    categories: (categoriesResult.data ?? []).map(mapCategory),
-    products: productRows.map((row) => {
-      const mappedProduct = mapProduct(row);
-      const relevance = relevanceByProductId[mappedProduct.id] ?? {
-        score: 0,
-        unitsSold: 0,
-        orderCount: 0,
-      };
-
-      return {
-        ...mappedProduct,
-        relevanceScore: relevance.score,
-        relevanceUnitsSold: relevance.unitsSold,
-        relevanceOrderCount: relevance.orderCount,
-      };
-    }),
+    categories: categoryRows
+      .filter((row) => visibleCategoryIds.has(row.id))
+      .map(mapCategory),
+    products: mappedProducts,
   };
 
   publicCatalogCache = {
