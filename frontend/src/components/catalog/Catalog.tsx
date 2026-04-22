@@ -276,16 +276,12 @@ export function Catalog() {
             )}
             <div>
               <h2 className="text-2xl lg:text-4xl font-bold uppercase tracking-tight text-neutral-900 mb-1 lg:mb-2">
-                Catalogo{" "}
+                Moda{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-800 to-purple-500">
                   Fitness
                 </span>
               </h2>
-              <p className="text-xs lg:text-sm text-neutral-500">
-                {activeCategory
-                  ? `Exibindo linha de ${activeCategoryLabel}`
-                  : "Navegue por equipamentos, roupas e suplementos de alta performance."}
-              </p>
+              <p className="text-xs lg:text-sm text-neutral-500">Mais do que roupa, é um estilo de vida!</p>
             </div>
           </div>
 
