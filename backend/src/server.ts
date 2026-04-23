@@ -13,6 +13,7 @@ import { dashboardRouter } from './modules/dashboard/routes.js';
 import { settingsRouter } from './modules/settings/routes.js';
 import { rateLimit } from './middleware/rateLimit.js';
 import { securityHeaders } from './middleware/securityHeaders.js';
+import { rejectDangerousJson } from './middleware/jsonGuard.js';
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(rateLimit({
   max: env.rateLimitMaxRequests,
 }));
 app.use(express.json({ limit: '25mb' }));
+app.use(rejectDangerousJson);
 
 app.get('/api/health', (_req, res) => {
   let databaseConfigured = false;

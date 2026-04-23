@@ -15,10 +15,25 @@ export function handleError(res: Response, error: unknown) {
     return res.status(error.status).json({ error: error.message });
   }
 
+  if (isBodyParserError(error, 'entity.parse.failed')) {
+    return res.status(400).json({ error: 'JSON invalido.' });
+  }
+
+  if (isBodyParserError(error, 'entity.too.large')) {
+    return res.status(413).json({ error: 'Payload muito grande.' });
+  }
+
   const message = process.env.NODE_ENV === 'production'
     ? 'Erro interno.'
     : error instanceof Error ? error.message : 'Erro interno.';
   return res.status(500).json({ error: message });
+}
+
+function isBodyParserError(error: unknown, type: string): boolean {
+  return !!error
+    && typeof error === 'object'
+    && 'type' in error
+    && (error as { type?: unknown }).type === type;
 }
 
 export function requireString(value: unknown, field: string): string {

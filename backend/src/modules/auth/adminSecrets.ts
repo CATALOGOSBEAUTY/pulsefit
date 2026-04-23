@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-import { env } from '../../config/env.js';
 import { ApiError } from '../../lib/http.js';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { verifySecretHash } from './secretHash.js';
@@ -34,19 +32,5 @@ export async function validateAdminAccessCode(accessCode: string, purpose: Secre
     throw new ApiError(400, 'Finalidade de segredo admin invalida.');
   }
 
-  try {
-    await validateAdminAccessCodeFromSupabase(accessCode);
-  } catch (error) {
-    if (!(error instanceof ApiError) || error.status !== 503) throw error;
-    if (!env.adminAccessCode) throw error;
-
-    const provided = Buffer.from(accessCode);
-    const expected = Buffer.from(env.adminAccessCode);
-    const matches = provided.length === expected.length && cryptoSafeEqual(provided, expected);
-    if (!matches) throw error;
-  }
-}
-
-function cryptoSafeEqual(provided: Buffer, expected: Buffer): boolean {
-  return provided.length === expected.length && crypto.timingSafeEqual(provided, expected);
+  await validateAdminAccessCodeFromSupabase(accessCode);
 }
