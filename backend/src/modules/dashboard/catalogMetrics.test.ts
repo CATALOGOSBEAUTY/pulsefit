@@ -1,0 +1,145 @@
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+import { buildCatalogMetrics } from './catalogMetrics.js';
+
+describe('buildCatalogMetrics', () => {
+  it('aggregates catalog health, quality, inventory, audience and sales metrics', () => {
+    const metrics = buildCatalogMetrics({
+      categories: [
+        { id: 'cat-men', name: 'Masculina', slug: 'masculina', parent_id: null, is_active: true },
+        { id: 'cat-sup', name: 'Suplementos', slug: 'suplementos', parent_id: null, is_active: true },
+        { id: 'cat-empty', name: 'Vazia', slug: 'vazia', parent_id: null, is_active: true },
+      ],
+      products: [
+        {
+          id: 'p1',
+          title: 'Regata masculina',
+          price: 79.9,
+          audience: 'masculino',
+          catalog_status: 'live',
+          is_active: true,
+          is_featured: true,
+          is_promo: false,
+          is_new: false,
+          stock_quantity: 10,
+          variants_enabled: false,
+          category_id: 'cat-men',
+          subcategory_id: null,
+          created_at: '2026-04-23T10:00:00.000Z',
+          category: { id: 'cat-men', name: 'Masculina', slug: 'masculina' },
+          subcategory: null,
+          product_images: [{ id: 'img1', url: 'https://cdn.test/p1.webp' }],
+          product_variants: [],
+        },
+        {
+          id: 'p2',
+          title: 'Whey protein',
+          price: 0,
+          audience: 'suplemento',
+          catalog_status: 'ready',
+          is_active: false,
+          is_featured: false,
+          is_promo: true,
+          is_new: true,
+          stock_quantity: 0,
+          variants_enabled: false,
+          category_id: 'cat-sup',
+          subcategory_id: null,
+          created_at: '2026-04-20T10:00:00.000Z',
+          category: { id: 'cat-sup', name: 'Suplementos', slug: 'suplementos' },
+          subcategory: null,
+          product_images: [],
+          product_variants: [],
+        },
+        {
+          id: 'p3',
+          title: 'Short feminino',
+          price: 99.9,
+          audience: 'feminino',
+          catalog_status: 'draft',
+          is_active: true,
+          is_featured: false,
+          is_promo: false,
+          is_new: true,
+          stock_quantity: 0,
+          variants_enabled: true,
+          category_id: null,
+          subcategory_id: null,
+          created_at: '2026-03-10T10:00:00.000Z',
+          category: null,
+          subcategory: null,
+          product_images: [{ id: 'img3', url: 'https://cdn.test/p3.webp' }],
+          product_variants: [
+            { id: 'v1', stock_quantity: 1, is_active: true },
+            { id: 'v2', stock_quantity: 0, is_active: true },
+          ],
+        },
+      ],
+      orders: [
+        {
+          id: 'o1',
+          total_amount: 259.7,
+          status: 'paid',
+          created_at: '2026-04-23T11:00:00.000Z',
+          order_items: [
+            { product_id: 'p1', quantity: 2, subtotal: 159.8 },
+            { product_id: 'p3', quantity: 1, subtotal: 99.9 },
+          ],
+        },
+        {
+          id: 'o2',
+          total_amount: 79.9,
+          status: 'cancelled',
+          created_at: '2026-04-22T11:00:00.000Z',
+          order_items: [
+            { product_id: 'p1', quantity: 1, subtotal: 79.9 },
+          ],
+        },
+      ],
+    }, { now: new Date('2026-04-23T12:00:00.000Z'), lowStockThreshold: 3 });
+
+    assert.equal(metrics.summary.totalProducts, 3);
+    assert.equal(metrics.summary.completionScore, 50);
+    assert.equal(metrics.summary.averagePrice, 59.93);
+    assert.equal(metrics.summary.priceMin, 0);
+    assert.equal(metrics.summary.priceMax, 99.9);
+    assert.deepEqual(metrics.statusFunnel, { draft: 1, ready: 1, live: 1 });
+    assert.deepEqual(metrics.imageCoverage, { total: 3, withImage: 2, withoutImage: 1, percent: 67 });
+    assert.deepEqual(metrics.stockHealth, {
+      totalUnits: 11,
+      ok: 1,
+      low: 1,
+      zero: 1,
+      variantManaged: 1,
+      lowStockThreshold: 3,
+    });
+    assert.equal(metrics.sales.totalRevenue, 259.7);
+    assert.equal(metrics.sales.averageTicket, 259.7);
+    assert.equal(metrics.sales.unitsSold, 3);
+    assert.equal(metrics.sales.validOrders, 1);
+    assert.equal(metrics.audience.find((item) => item.key === 'masculino')?.unitsSold, 2);
+    assert.equal(metrics.audience.find((item) => item.key === 'suplemento')?.withoutPrice, 1);
+    assert.equal(metrics.quality.withoutImage.count, 1);
+    assert.equal(metrics.quality.withoutPrice.count, 1);
+    assert.equal(metrics.quality.withoutCategory.count, 1);
+    assert.equal(metrics.quality.withoutSubcategory.count, 3);
+    assert.equal(metrics.quality.emptyCategories.count, 1);
+    assert.equal(metrics.topProductsByRevenue[0].id, 'p1');
+    assert.equal(metrics.topProductsByRevenue[0].revenue, 159.8);
+    assert.equal(metrics.categoryPerformance[0].categoryId, 'cat-men');
+    assert.equal(metrics.categoryPerformance[0].revenue, 159.8);
+    assert.equal(metrics.activity.productsCreatedLast7Days, 2);
+    assert.equal(metrics.activity.ordersLast7Days, 1);
+    assert.equal(metrics.alerts[0].severity, 'critical');
+  });
+
+  it('returns safe zero metrics when the catalog is empty', () => {
+    const metrics = buildCatalogMetrics({ products: [], categories: [], orders: [] });
+
+    assert.equal(metrics.summary.totalProducts, 0);
+    assert.equal(metrics.summary.completionScore, 0);
+    assert.equal(metrics.imageCoverage.percent, 0);
+    assert.equal(metrics.sales.averageTicket, 0);
+    assert.equal(metrics.alerts.length, 0);
+  });
+});
