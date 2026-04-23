@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { ApiError, handleError, ok, requireString } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../catalog/service.js';
+import { assertPublicCatalogQuery } from '../catalog/publicQueryGuard.js';
 import { mapCategory } from './mapper.js';
 
 export const categoryRouter = Router();
@@ -54,26 +55,25 @@ async function ensureNoCategoryUsage(categoryId: string) {
 
 categoryRouter.get('/', async (req, res) => {
   try {
-    const includeInactive = req.query.includeInactive === 'true';
+    assertPublicCatalogQuery(req.query);
+    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+    const snapshot = await loadPublicCatalogSnapshot();
+    return ok(res, snapshot.categories);
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
 
-    if (!includeInactive) {
-      res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
-      const snapshot = await loadPublicCatalogSnapshot();
-      return ok(res, snapshot.categories);
-    }
-
-    let query = getSupabaseAdmin()
+categoryRouter.get('/admin', requireAuth, async (_req, res) => {
+  try {
+    const { data, error } = await getSupabaseAdmin()
       .from('categories')
       .select('*')
       .order('parent_id', { ascending: true, nullsFirst: true })
       .order('sort_order', { ascending: true })
       .order('name', { ascending: true });
 
-    if (!includeInactive) query = query.eq('is_active', true);
-
-    const { data, error } = await query;
     if (error) throw error;
-
     return ok(res, (data ?? []).map(mapCategory));
   } catch (error) {
     return handleError(res, error);

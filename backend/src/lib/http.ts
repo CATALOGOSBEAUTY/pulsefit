@@ -15,7 +15,9 @@ export function handleError(res: Response, error: unknown) {
     return res.status(error.status).json({ error: error.message });
   }
 
-  const message = error instanceof Error ? error.message : 'Erro interno.';
+  const message = process.env.NODE_ENV === 'production'
+    ? 'Erro interno.'
+    : error instanceof Error ? error.message : 'Erro interno.';
   return res.status(500).json({ error: message });
 }
 
@@ -37,4 +39,3 @@ export function requireNumber(value: unknown, field: string): number {
   }
   return parsed;
 }
-

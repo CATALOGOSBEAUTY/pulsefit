@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { handleError, ok } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
+import { normalizePublicSettingsPayload } from './publicSettings.js';
 
 export const settingsRouter = Router();
 
@@ -24,11 +25,10 @@ settingsRouter.get('/', async (_req, res) => {
 
 settingsRouter.put('/', requireAuth, async (req, res) => {
   try {
-    const entries = Object.entries(req.body ?? {}).map(([key, value]) => ({
-      key,
-      value: String(value ?? ''),
-      is_public: true,
-      updated_at: new Date().toISOString(),
+    const now = new Date().toISOString();
+    const entries = normalizePublicSettingsPayload(req.body ?? {}).map((entry) => ({
+      ...entry,
+      updated_at: now,
     }));
 
     if (entries.length === 0) return ok(res, {});
@@ -44,4 +44,3 @@ settingsRouter.put('/', requireAuth, async (req, res) => {
     return handleError(res, error);
   }
 });
-

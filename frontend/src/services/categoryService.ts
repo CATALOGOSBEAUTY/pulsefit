@@ -2,7 +2,9 @@ import { apiRequest } from './apiClient';
 import { Category } from '../modules/categories/store/useCategoryStore';
 
 export async function listCategories(includeInactive = false) {
-  return apiRequest<Category[]>(`/api/categories${includeInactive ? '?includeInactive=true' : ''}`);
+  return apiRequest<Category[]>(includeInactive ? '/api/categories/admin' : '/api/categories', {
+    auth: includeInactive,
+  });
 }
 
 export async function createCategory(name: string, parentId?: string | null) {

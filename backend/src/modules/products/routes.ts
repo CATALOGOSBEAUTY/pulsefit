@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { ApiError, handleError, ok, optionalString, requireNumber, requireString } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../catalog/service.js';
+import { assertPublicCatalogQuery } from '../catalog/publicQueryGuard.js';
 import { uploadProductImageDataUrl } from '../storage/upload.js';
 import { mapProduct, type ProductPayload } from './mapper.js';
 import { productSelect } from './select.js';
@@ -109,24 +110,10 @@ async function saveVariants(productId: string, variants: ProductVariantPayload[]
 
 productRouter.get('/', async (req, res) => {
   try {
-    const includeInactive = req.query.includeInactive === 'true';
-
-    if (!includeInactive) {
-      res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
-      const snapshot = await loadPublicCatalogSnapshot();
-      return ok(res, snapshot.products);
-    }
-
-    let query = getSupabaseAdmin()
-      .from('products')
-      .select(productSelect())
-      .order('created_at', { ascending: false });
-
-    if (!includeInactive) query = query.eq('is_active', true);
-
-    const { data, error } = await query;
-    if (error) throw error;
-    return ok(res, (data ?? []).map(mapProduct));
+    assertPublicCatalogQuery(req.query);
+    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+    const snapshot = await loadPublicCatalogSnapshot();
+    return ok(res, snapshot.products);
   } catch (error) {
     return handleError(res, error);
   }
