@@ -48,6 +48,7 @@ interface ProductState {
   updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   toggleStatus: (id: string, field: 'isActive' | 'isFeatured' | 'isPromo' | 'isNew') => Promise<void>;
+  bulkUpdateStock: (productIds: string[], stockQuantity: number) => Promise<void>;
 }
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -84,6 +85,14 @@ export const useProductStore = create<ProductState>((set) => ({
     const updated = await productService.toggleProductStatus(id, field);
     set((state) => ({
       products: state.products.map((product) => product.id === id ? updated : product),
+    }));
+  },
+  bulkUpdateStock: async (productIds, stockQuantity) => {
+    const updatedProducts = await productService.bulkUpdateProductStock(productIds, stockQuantity);
+    const updatedById = new Map(updatedProducts.map((product) => [product.id, product]));
+
+    set((state) => ({
+      products: state.products.map((product) => updatedById.get(product.id) ?? product),
     }));
   },
 }));

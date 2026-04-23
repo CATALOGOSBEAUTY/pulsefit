@@ -40,3 +40,11 @@ export async function toggleProductStatus(id: string, field: 'isActive' | 'isFea
   });
 }
 
+export async function bulkUpdateProductStock(productIds: string[], stockQuantity: number) {
+  return apiRequest<Product[]>('/api/products/bulk/stock', {
+    method: 'PATCH',
+    auth: true,
+    body: JSON.stringify({ productIds, stockQuantity }),
+  });
+}
+

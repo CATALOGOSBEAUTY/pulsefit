@@ -4,6 +4,7 @@ import { ApiError, handleError, ok, optionalString, requireNumber, requireString
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../catalog/service.js';
 import { assertPublicCatalogQuery } from '../catalog/publicQueryGuard.js';
+import { parseBulkStockPayload } from './bulkStock.js';
 import { mapProduct, type ProductPayload } from './mapper.js';
 import { productSelect } from './select.js';
 import { parseProductVariants } from './variants.js';
@@ -181,6 +182,39 @@ productRouter.put('/:id', requireAuth, async (req, res) => {
 
     invalidatePublicCatalogCache();
     return ok(res, mapProduct(updated));
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+productRouter.patch('/bulk/stock', requireAuth, async (req, res) => {
+  try {
+    const payload = parseBulkStockPayload(req.body);
+    const supabase = getSupabaseAdmin();
+
+    const { data: existingProducts, error: existingProductsError } = await supabase
+      .from('products')
+      .select('id')
+      .in('id', payload.productIds);
+
+    if (existingProductsError) throw existingProductsError;
+    if ((existingProducts ?? []).length !== payload.productIds.length) {
+      throw new ApiError(404, 'Um ou mais produtos nao foram encontrados.');
+    }
+
+    const { data, error } = await supabase
+      .from('products')
+      .update({
+        stock_quantity: payload.stockQuantity,
+        updated_at: new Date().toISOString(),
+      })
+      .in('id', payload.productIds)
+      .select(productSelect());
+
+    if (error) throw error;
+
+    invalidatePublicCatalogCache();
+    return ok(res, (data ?? []).map(mapProduct));
   } catch (error) {
     return handleError(res, error);
   }
