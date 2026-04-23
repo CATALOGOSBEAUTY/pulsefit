@@ -7,6 +7,7 @@ import { ProductsListView } from './modules/products/views/ProductsListView';
 import { CategoriesView } from './modules/categories/views/CategoriesView';
 import { MediaView } from './modules/media/views/MediaView';
 import { HighlightsView } from './modules/highlights/views/HighlightsView';
+import { SettingsView } from './modules/settings/views/SettingsView';
 import { Header } from './components/layout/Header';
 import { Hero } from './components/hero/Hero';
 import { Catalog } from './components/catalog/Catalog';
@@ -84,7 +85,7 @@ export default function App() {
           <Route path="categories" element={<CategoriesView />} />
           <Route path="media" element={<MediaView />} />
           <Route path="highlights" element={<HighlightsView />} />
-          <Route path="settings" element={<div className="bg-white p-8 rounded-2xl border border-neutral-200 shadow-sm text-neutral-500">Módulo de Configurações em Construção</div>} />
+          <Route path="settings" element={<SettingsView />} />
         </Route>
 
         {/* Fallback */}

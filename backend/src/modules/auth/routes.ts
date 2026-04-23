@@ -8,6 +8,11 @@ import { loginKey, rateLimit } from '../../middleware/rateLimit.js';
 import { validateAdminAccessCode } from './adminSecrets.js';
 import { consumeStoredGateToken, createStoredGateToken } from './gateTokens.js';
 import { serializeLogoutCookie, serializeSessionCookie } from './sessionCookie.js';
+import {
+  confirmAdminTotpSetup,
+  getAdminTotpSetupStatus,
+  startAdminTotpSetup,
+} from './totpSetup.js';
 
 export const authRouter = Router();
 
@@ -23,6 +28,75 @@ authRouter.post('/gate', rateLimit({
     return ok(res, {
       gateToken: await createStoredGateToken(getSupabaseAdmin()),
     });
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+authRouter.get('/totp/status', async (_req, res) => {
+  try {
+    res.setHeader('Cache-Control', 'no-store');
+    return ok(res, await getAdminTotpSetupStatus(getSupabaseAdmin()));
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+authRouter.post('/totp/setup/start', rateLimit({
+  keyPrefix: 'admin-totp-setup-start',
+  windowMs: env.loginRateLimitWindowMs,
+  max: env.loginRateLimitMaxAttempts,
+}), async (req, res) => {
+  try {
+    const status = await getAdminTotpSetupStatus(getSupabaseAdmin());
+
+    if (status.configured && !req.admin) {
+      return requireAuth(req, res, async () => {
+        try {
+          res.setHeader('Cache-Control', 'no-store');
+          return ok(res, await startAdminTotpSetup(getSupabaseAdmin(), {
+            jwtSecret: env.jwtSecret,
+            allowReset: true,
+          }));
+        } catch (error) {
+          return handleError(res, error);
+        }
+      });
+    }
+
+    if (!status.configured) {
+      const email = requireString(req.body.email, 'email');
+      const password = requireString(req.body.password, 'password');
+      validateAdminCredentials(email, password);
+    }
+
+    res.setHeader('Cache-Control', 'no-store');
+    return ok(res, await startAdminTotpSetup(getSupabaseAdmin(), {
+      jwtSecret: env.jwtSecret,
+      allowReset: false,
+    }));
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+authRouter.post('/totp/setup/confirm', rateLimit({
+  keyPrefix: 'admin-totp-setup-confirm',
+  windowMs: env.loginRateLimitWindowMs,
+  max: env.loginRateLimitMaxAttempts,
+}), async (req, res) => {
+  try {
+    const setupToken = requireString(req.body.setupToken, 'setupToken');
+    const code = requireString(req.body.code, 'code');
+
+    await confirmAdminTotpSetup(getSupabaseAdmin(), {
+      jwtSecret: env.jwtSecret,
+      setupToken,
+      code,
+    });
+
+    res.setHeader('Cache-Control', 'no-store');
+    return ok(res, { success: true });
   } catch (error) {
     return handleError(res, error);
   }

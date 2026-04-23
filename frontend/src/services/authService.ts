@@ -5,6 +5,39 @@ export interface AdminUser {
   email: string;
 }
 
+export interface AdminTotpStatus {
+  configured: boolean;
+}
+
+export interface AdminTotpSetup {
+  setupKey: string;
+  setupToken: string;
+  otpauthUri: string;
+  expiresAt: string;
+}
+
+export async function getAdminTotpStatus() {
+  return apiRequest<AdminTotpStatus>('/api/auth/totp/status');
+}
+
+export async function startAdminTotpSetup(
+  auth = false,
+  credentials?: { email: string; password: string }
+) {
+  return apiRequest<AdminTotpSetup>('/api/auth/totp/setup/start', {
+    method: 'POST',
+    auth,
+    body: credentials ? JSON.stringify(credentials) : undefined,
+  });
+}
+
+export async function confirmAdminTotpSetup(setupToken: string, code: string) {
+  await apiRequest<{ success: boolean }>('/api/auth/totp/setup/confirm', {
+    method: 'POST',
+    body: JSON.stringify({ setupToken, code }),
+  });
+}
+
 export async function requestAdminGate(accessCode: string) {
   const response = await apiRequest<{ gateToken: string }>('/api/auth/gate', {
     method: 'POST',
