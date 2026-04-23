@@ -8,7 +8,7 @@ interface AuthState {
   setUser: (user: AdminUser | null) => void;
   setLoading: (loading: boolean) => void;
   hydrateSession: () => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -22,8 +22,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     const user = await getCurrentUser();
     set({ user, isAuthenticated: !!user, isLoading: false });
   },
-  logout: () => {
-    clearSession();
+  logout: async () => {
+    await clearSession();
     set({ user: null, isAuthenticated: false, isLoading: false });
   },
 }));

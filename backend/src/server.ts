@@ -27,9 +27,9 @@ app.use(cors({
     }
     callback(new Error('Origem nao autorizada pelo CORS.'));
   },
-  credentials: false,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Gate-Token'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Gate-Token', 'X-Admin-Request'],
   maxAge: 600,
 }));
 app.use(rateLimit({

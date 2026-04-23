@@ -1,4 +1,4 @@
-import { apiRequest, clearAuthToken, getAuthToken, setAuthToken } from './apiClient';
+import { apiRequest } from './apiClient';
 
 export interface AdminUser {
   id: string;
@@ -15,7 +15,7 @@ export async function requestAdminGate(accessCode: string) {
 }
 
 export async function login(email: string, password: string, gateToken: string) {
-  const response = await apiRequest<{ token: string; user: AdminUser }>('/api/auth/login', {
+  const response = await apiRequest<{ user: AdminUser }>('/api/auth/login', {
     method: 'POST',
     headers: {
       'X-Admin-Gate-Token': gateToken,
@@ -23,22 +23,25 @@ export async function login(email: string, password: string, gateToken: string) 
     body: JSON.stringify({ email, password }),
   });
 
-  setAuthToken(response.token);
   return response.user;
 }
 
 export async function getCurrentUser() {
-  if (!getAuthToken()) return null;
-
   try {
     const response = await apiRequest<{ user: AdminUser }>('/api/auth/me', { auth: true });
     return response.user;
   } catch {
-    clearAuthToken();
     return null;
   }
 }
 
-export function logout() {
-  clearAuthToken();
+export async function logout() {
+  try {
+    await apiRequest<{ success: boolean }>('/api/auth/logout', {
+      method: 'POST',
+      auth: true,
+    });
+  } catch {
+    // Local state is cleared even if the server-side cookie has already expired.
+  }
 }

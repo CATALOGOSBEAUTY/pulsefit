@@ -33,4 +33,5 @@ on public.settings for select
 using (is_public = true);
 
 -- Escritas administrativas devem passar pelo backend com service role.
+-- Segredos administrativos e gate tokens ficam em settings com is_public=false.
 

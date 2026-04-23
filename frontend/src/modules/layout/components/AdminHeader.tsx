@@ -7,8 +7,8 @@ export function AdminHeader() {
   const logout = useAuthStore((state) => state.logout);
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     window.location.href = '/login';
   };
 
