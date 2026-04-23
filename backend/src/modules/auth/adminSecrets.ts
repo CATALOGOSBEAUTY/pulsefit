@@ -1,36 +1,43 @@
 import { ApiError } from '../../lib/http.js';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
-import { verifySecretHash } from './secretHash.js';
+import { env } from '../../config/env.js';
+import { decryptSecret } from './secretEncryption.js';
+import { verifyTotpCode } from './totp.js';
 
-type SecretPurpose = 'admin_access_code';
-const ADMIN_ACCESS_CODE_HASH_KEY = 'admin_access_code_hash';
+type SecretPurpose = 'admin_totp';
+const ADMIN_TOTP_SECRET_KEY = 'admin_totp_secret_encrypted';
 
-export async function validateAdminAccessCodeFromSupabase(accessCode: string): Promise<void> {
+export function validateTotpSetting(code: string, encryptedSecret: string, jwtSecret: string, now = new Date()): void {
+  const secret = decryptSecret(encryptedSecret, jwtSecret);
+  if (!verifyTotpCode(code, secret, now)) {
+    throw new ApiError(403, 'Codigo autenticador invalido.');
+  }
+}
+
+export async function validateAdminTotpFromSupabase(code: string): Promise<void> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from('settings')
     .select('value')
-    .eq('key', ADMIN_ACCESS_CODE_HASH_KEY)
+    .eq('key', ADMIN_TOTP_SECRET_KEY)
     .eq('is_public', false)
     .maybeSingle();
 
   if (error) {
-    throw new ApiError(503, 'Segredo admin nao configurado no Supabase.');
+    throw new ApiError(503, 'Autenticador admin nao configurado no Supabase.');
   }
 
   if (!data?.value) {
-    throw new ApiError(503, 'Segredo admin nao configurado no Supabase.');
+    throw new ApiError(503, 'Autenticador admin nao configurado no Supabase.');
   }
 
-  if (!verifySecretHash(accessCode, data.value)) {
-    throw new ApiError(403, 'Codigo de acesso invalido.');
-  }
+  validateTotpSetting(code, data.value, env.jwtSecret);
 }
 
-export async function validateAdminAccessCode(accessCode: string, purpose: SecretPurpose = 'admin_access_code'): Promise<void> {
-  if (purpose !== 'admin_access_code') {
+export async function validateAdminAccessCode(accessCode: string, purpose: SecretPurpose = 'admin_totp'): Promise<void> {
+  if (purpose !== 'admin_totp') {
     throw new ApiError(400, 'Finalidade de segredo admin invalida.');
   }
 
-  await validateAdminAccessCodeFromSupabase(accessCode);
+  await validateAdminTotpFromSupabase(accessCode);
 }

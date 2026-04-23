@@ -68,7 +68,7 @@ export function LoginView() {
 
             {!gateToken ? (
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Código de Acesso</label>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Codigo do Google Authenticator</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <KeyRound className="h-5 w-5 text-neutral-400" />
@@ -78,7 +78,7 @@ export function LoginView() {
                     value={accessCode}
                     onChange={(e) => setAccessCode(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
-                    placeholder="Código restrito"
+                    placeholder="6 digitos"
                     autoComplete="one-time-code"
                     required
                   />
@@ -129,7 +129,7 @@ export function LoginView() {
               disabled={loading}
               className="mt-4 w-full bg-gradient-to-r from-purple-800 to-purple-600 text-white font-bold text-sm uppercase tracking-tight rounded-xl py-3.5 hover:from-purple-700 hover:to-purple-500 transition-all shadow-md shadow-purple-500/20 disabled:opacity-50"
             >
-              {loading ? 'Autenticando...' : gateToken ? 'Entrar no Sistema' : 'Validar Acesso'}
+              {loading ? 'Autenticando...' : gateToken ? 'Entrar no Sistema' : 'Validar Autenticador'}
             </button>
           </form>
         </div>
