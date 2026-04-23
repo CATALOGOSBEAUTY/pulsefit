@@ -4,7 +4,7 @@ import { ApiError, handleError, ok, optionalString, requireNumber, requireString
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { invalidatePublicCatalogCache } from '../catalog/service.js';
 import { generateOrderCode } from './orderCode.js';
-import { applyInventoryAdjustments } from './inventory.js';
+import { createOrderWithItemsAndInventory } from './createOrder.js';
 
 export const orderRouter = Router();
 
@@ -136,17 +136,7 @@ orderRouter.post('/', async (req, res) => {
     };
 
     const supabase = getSupabaseAdmin();
-    const { data: order, error: orderError } = await supabase.from('orders').insert(orderPayload).select('*').single();
-    if (orderError) throw orderError;
-
-    const { data: createdItems, error: itemsError } = await supabase
-      .from('order_items')
-      .insert(normalizedItems.map((item: NormalizedOrderItem) => ({ ...item, order_id: order.id })))
-      .select('*');
-
-    if (itemsError) throw itemsError;
-
-    await applyInventoryAdjustments(supabase, normalizedItems);
+    const { order, createdItems } = await createOrderWithItemsAndInventory(supabase, orderPayload, normalizedItems);
     invalidatePublicCatalogCache();
 
     const phone = await getPublicSetting('whatsapp_phone');
