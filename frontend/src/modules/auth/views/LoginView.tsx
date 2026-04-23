@@ -1,14 +1,12 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail } from 'lucide-react';
+import { KeyRound, Lock, Mail } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
-import { login } from '../../../services/authService';
+import { login, requestAdminGate } from '../../../services/authService';
 
-interface LoginViewProps {
-  gateToken: string;
-}
-
-export function LoginView({ gateToken }: LoginViewProps) {
+export function LoginView() {
+  const [accessCode, setAccessCode] = useState('');
+  const [gateToken, setGateToken] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,6 +14,22 @@ export function LoginView({ gateToken }: LoginViewProps) {
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
   const logoSrc = "/assets/pulsefit-logo-transparent.png";
+
+  const handleGate = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const token = await requestAdminGate(accessCode.trim());
+      setGateToken(token);
+      setAccessCode('');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -45,53 +59,77 @@ export function LoginView({ gateToken }: LoginViewProps) {
         </div>
         
         <div className="p-8">
-          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+          <form onSubmit={gateToken ? handleLogin : handleGate} className="flex flex-col gap-5">
             {error && (
               <div className="p-3 bg-red-50 text-red-600 border border-red-100 rounded-lg text-sm text-center">
                 {error}
               </div>
             )}
-            
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">E-mail</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-neutral-400" />
-                </div>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
-                  placeholder="admin@empresa.com"
-                  required
-                />
-              </div>
-            </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Senha</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-neutral-400" />
+            {!gateToken ? (
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Código de Acesso</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <KeyRound className="h-5 w-5 text-neutral-400" />
+                  </div>
+                  <input
+                    type="password"
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
+                    placeholder="Código restrito"
+                    autoComplete="one-time-code"
+                    required
+                  />
                 </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
-                  placeholder="********"
-                  required
-                />
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">E-mail</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail className="h-5 w-5 text-neutral-400" />
+                    </div>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
+                      placeholder="admin@empresa.com"
+                      autoComplete="username"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Senha</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-neutral-400" />
+                    </div>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
+                      placeholder="********"
+                      autoComplete="current-password"
+                      required
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             <button
               type="submit"
               disabled={loading}
               className="mt-4 w-full bg-gradient-to-r from-purple-800 to-purple-600 text-white font-bold text-sm uppercase tracking-tight rounded-xl py-3.5 hover:from-purple-700 hover:to-purple-500 transition-all shadow-md shadow-purple-500/20 disabled:opacity-50"
             >
-              {loading ? 'Autenticando...' : 'Entrar no Sistema'}
+              {loading ? 'Autenticando...' : gateToken ? 'Entrar no Sistema' : 'Validar Acesso'}
             </button>
           </form>
         </div>

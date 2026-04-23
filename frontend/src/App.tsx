@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { LoginView } from './modules/auth/views/LoginView';
 import { AdminLayout } from './modules/layout/views/AdminLayout';
 import { DashboardView } from './modules/dashboard/views/DashboardView';
@@ -13,7 +12,6 @@ import { Hero } from './components/hero/Hero';
 import { Catalog } from './components/catalog/Catalog';
 import { ProductDetail } from './components/catalog/ProductDetail';
 import { CartDrawer } from './components/cart/CartDrawer';
-import { requestAdminGate } from './services/authService';
 import { useStore } from './store/useStore';
 
 type PublicTab = 'inicio' | 'catalogo' | 'contato';
@@ -65,46 +63,6 @@ function PublicStore() {
   );
 }
 
-function ProtectedLoginRoute() {
-  const { accessCode } = useParams();
-  const [gateToken, setGateToken] = useState('');
-  const [isChecking, setIsChecking] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    if (!accessCode) {
-      setIsChecking(false);
-      return;
-    }
-
-    requestAdminGate(accessCode)
-      .then((token) => {
-        if (isMounted) setGateToken(token);
-      })
-      .catch(() => {
-        if (isMounted) setGateToken('');
-      })
-      .finally(() => {
-        if (isMounted) setIsChecking(false);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [accessCode]);
-
-  if (isChecking) {
-    return <div className="min-h-screen bg-neutral-50" />;
-  }
-
-  if (!gateToken) {
-    return <Navigate to="/catalogo" replace />;
-  }
-
-  return <LoginView gateToken={gateToken} />;
-}
-
 export default function App() {
   return (
     <Router>
@@ -117,9 +75,7 @@ export default function App() {
         <Route path="/contato" element={<PublicStore />} />
 
         {/* Rota pública de login admin */}
-        <Route path="/login" element={<Navigate to="/catalogo" replace />} />
-        <Route path="/:accessCode/login" element={<ProtectedLoginRoute />} />
-
+        <Route path="/login" element={<LoginView />} />
         {/* Rotas Privadas (Admin Layout) */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
