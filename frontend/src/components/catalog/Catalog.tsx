@@ -135,7 +135,25 @@ export function Catalog() {
     };
   }, []);
 
-  const rootCategories = storeCategories.filter((category) => !getParentId(category));
+  const rootCategories = useMemo(
+    () => storeCategories.filter((category) => !getParentId(category)),
+    [storeCategories]
+  );
+  const subcategoriesByParent = useMemo(() => {
+    return storeCategories.reduce<Record<string, CatalogCategory[]>>((acc, category) => {
+      const parentId = getParentId(category);
+      if (!parentId) return acc;
+      acc[parentId] = [...(acc[parentId] ?? []), category];
+      return acc;
+    }, {});
+  }, [storeCategories]);
+  const categoryProductCounts = useMemo(() => {
+    return storeProducts.reduce<Record<string, number>>((acc, product) => {
+      if (product.categoryId) acc[product.categoryId] = (acc[product.categoryId] ?? 0) + 1;
+      if (product.subcategoryId) acc[product.subcategoryId] = (acc[product.subcategoryId] ?? 0) + 1;
+      return acc;
+    }, {});
+  }, [storeProducts]);
   const activeCategoryData = storeCategories.find((category) => category.id === activeCategory);
   const activeCategoryLabel = activeCategory ? activeCategoryData?.name : "Todos os Itens";
 
@@ -189,86 +207,125 @@ export function Catalog() {
           transition-all duration-300 ease-in-out shrink-0 overflow-hidden
           ${
             isSidebarOpen
-              ? "translate-x-0 w-72 lg:w-64 shadow-2xl lg:shadow-none pointer-events-auto"
-              : "-translate-x-full w-72 border-r-0 opacity-0 pointer-events-none lg:translate-x-0 lg:w-0"
+              ? "translate-x-0 w-[min(20rem,calc(100vw-1rem))] lg:w-72 shadow-2xl lg:shadow-none pointer-events-auto"
+              : "-translate-x-full w-[min(20rem,calc(100vw-1rem))] border-r-0 opacity-0 pointer-events-none lg:translate-x-0 lg:w-0"
           }
         `}
       >
-        <div className="w-72 lg:w-64 p-6 flex flex-col h-full overflow-y-auto custom-scrollbar">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-widest">
-              Categorias
-            </h3>
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-neutral-500 hover:text-purple-700 bg-neutral-50 hover:bg-purple-50 border border-neutral-200 hover:border-purple-200 rounded-lg transition-colors"
-              aria-label="Fechar painel"
-            >
-              <X className="w-3.5 h-3.5" />
-              Fechar
-            </button>
+        <div className="w-[min(20rem,calc(100vw-1rem))] lg:w-72 flex h-full flex-col overflow-hidden">
+          <div className="border-b border-neutral-100 bg-white/95 px-5 py-5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <h3 className="text-[11px] font-black text-neutral-500 uppercase tracking-[0.22em]">
+                  Categorias
+                </h3>
+                <p className="mt-1 truncate text-xs text-neutral-400">
+                  Navegue por linha e tipo de produto
+                </p>
+              </div>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-neutral-500 shadow-sm transition-colors hover:border-purple-200 hover:bg-purple-50 hover:text-purple-700"
+                aria-label="Fechar painel"
+              >
+                <X className="w-3.5 h-3.5" />
+                Fechar
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            {isLoading &&
-              Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="h-10 animate-pulse rounded-lg bg-neutral-100" />
-              ))}
+          <div className="flex-1 overflow-y-auto px-4 py-5 custom-scrollbar">
+            <div className="flex flex-col gap-3">
+              {isLoading &&
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="h-12 animate-pulse rounded-xl bg-neutral-100" />
+                ))}
 
-            {!isLoading && (
-              <>
-                <button
-                  onClick={() => {
-                    setActiveCategory(null);
-                    if (window.innerWidth < 1024) setIsSidebarOpen(false);
-                  }}
-                  className={`px-4 py-2 text-sm text-left rounded-lg transition-colors whitespace-nowrap ${
-                    activeCategory === null
-                      ? "bg-purple-100 text-purple-800 font-bold shadow-sm"
-                      : "text-neutral-600 hover:text-purple-800 hover:bg-purple-50"
-                  }`}
-                >
-                  Todos os Itens
-                </button>
+              {!isLoading && (
+                <>
+                  <button
+                    onClick={() => {
+                      setActiveCategory(null);
+                      if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                    }}
+                    className={`group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-all ${
+                      activeCategory === null
+                        ? "border-purple-200 bg-purple-100 text-purple-800 font-black shadow-sm"
+                        : "border-transparent bg-white text-neutral-700 hover:border-purple-100 hover:bg-purple-50 hover:text-purple-800"
+                    }`}
+                  >
+                    <span className="min-w-0 truncate">Todos os Itens</span>
+                    <span className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-bold text-neutral-500">
+                      {storeProducts.length}
+                    </span>
+                  </button>
 
-                {rootCategories.map((category) => (
-                  <div key={category.id} className="flex flex-col gap-1">
-                    <button
-                      onClick={() => {
-                        setActiveCategory(category.id);
-                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
-                      }}
-                      className={`px-4 py-2 text-sm text-left rounded-lg transition-colors whitespace-nowrap ${
-                        activeCategory === category.id
-                          ? "bg-purple-100 text-purple-800 font-bold shadow-sm"
-                          : "text-neutral-600 hover:text-purple-800 hover:bg-purple-50"
-                      }`}
-                    >
-                      {category.name}
-                    </button>
+                  {rootCategories.map((category) => {
+                    const subcategories = subcategoriesByParent[category.id] ?? [];
+                    const isCategoryActive = activeCategory === category.id;
 
-                    {storeCategories
-                      .filter((subcategory) => getParentId(subcategory) === category.id)
-                      .map((subcategory) => (
+                    return (
+                      <div key={category.id} className="rounded-2xl border border-neutral-100 bg-white p-2 shadow-sm">
                         <button
-                          key={subcategory.id}
                           onClick={() => {
-                            setActiveCategory(subcategory.id);
+                            setActiveCategory(category.id);
                             if (window.innerWidth < 1024) setIsSidebarOpen(false);
                           }}
-                          className={`ml-4 px-4 py-2 text-sm text-left rounded-lg transition-colors whitespace-nowrap ${
-                            activeCategory === subcategory.id
-                              ? "bg-purple-100 text-purple-800 font-bold shadow-sm"
-                              : "text-neutral-600 hover:text-purple-800 hover:bg-purple-50"
+                          className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-all ${
+                            isCategoryActive
+                              ? "bg-purple-100 text-purple-800 shadow-sm"
+                              : "text-neutral-700 hover:bg-purple-50 hover:text-purple-800"
                           }`}
+                          title={category.name}
                         >
-                          {subcategory.name}
+                          <span className={`h-8 w-1 rounded-full ${isCategoryActive ? "bg-purple-600" : "bg-neutral-200"}`} />
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm font-bold">{category.name}</span>
+                            {subcategories.length > 0 && (
+                              <span className="mt-0.5 block text-[11px] font-medium text-neutral-400">
+                                {subcategories.length} subcategorias
+                              </span>
+                            )}
+                          </span>
+                          <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[11px] font-bold text-neutral-500">
+                            {categoryProductCounts[category.id] ?? 0}
+                          </span>
                         </button>
-                      ))}
-                  </div>
-                ))}
-              </>
-            )}
+
+                        {subcategories.length > 0 && (
+                          <div className="mt-1 flex flex-col gap-1 border-l border-neutral-100 pl-3">
+                            {subcategories.map((subcategory) => {
+                              const isSubcategoryActive = activeCategory === subcategory.id;
+
+                              return (
+                                <button
+                                  key={subcategory.id}
+                                  onClick={() => {
+                                    setActiveCategory(subcategory.id);
+                                    if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                                  }}
+                                  className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-all ${
+                                    isSubcategoryActive
+                                      ? "bg-purple-50 text-purple-800 font-bold"
+                                      : "text-neutral-600 hover:bg-neutral-50 hover:text-purple-800"
+                                  }`}
+                                  title={subcategory.name}
+                                >
+                                  <span className="min-w-0 truncate">{subcategory.name}</span>
+                                  <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-neutral-400">
+                                    {categoryProductCounts[subcategory.id] ?? 0}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </aside>
