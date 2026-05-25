@@ -1,20 +1,21 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { LoginView } from './modules/auth/views/LoginView';
-import { AdminLayout } from './modules/layout/views/AdminLayout';
-import { DashboardView } from './modules/dashboard/views/DashboardView';
-import { ProductsListView } from './modules/products/views/ProductsListView';
-import { CategoriesView } from './modules/categories/views/CategoriesView';
-import { MediaView } from './modules/media/views/MediaView';
-import { HighlightsView } from './modules/highlights/views/HighlightsView';
-import { SettingsView } from './modules/settings/views/SettingsView';
-import { ContactView } from './modules/contact/views/ContactView';
 import { Header } from './components/layout/Header';
 import { Hero } from './components/hero/Hero';
 import { Catalog } from './components/catalog/Catalog';
 import { ProductDetail } from './components/catalog/ProductDetail';
 import { CartDrawer } from './components/cart/CartDrawer';
 import { useStore } from './store/useStore';
+
+const LoginView = lazy(() => import('./modules/auth/views/LoginView').then((module) => ({ default: module.LoginView })));
+const AdminLayout = lazy(() => import('./modules/layout/views/AdminLayout').then((module) => ({ default: module.AdminLayout })));
+const DashboardView = lazy(() => import('./modules/dashboard/views/DashboardView').then((module) => ({ default: module.DashboardView })));
+const ProductsListView = lazy(() => import('./modules/products/views/ProductsListView').then((module) => ({ default: module.ProductsListView })));
+const CategoriesView = lazy(() => import('./modules/categories/views/CategoriesView').then((module) => ({ default: module.CategoriesView })));
+const MediaView = lazy(() => import('./modules/media/views/MediaView').then((module) => ({ default: module.MediaView })));
+const HighlightsView = lazy(() => import('./modules/highlights/views/HighlightsView').then((module) => ({ default: module.HighlightsView })));
+const SettingsView = lazy(() => import('./modules/settings/views/SettingsView').then((module) => ({ default: module.SettingsView })));
+const ContactView = lazy(() => import('./modules/contact/views/ContactView').then((module) => ({ default: module.ContactView })));
 
 type PublicTab = 'inicio' | 'catalogo' | 'contato';
 
@@ -32,6 +33,10 @@ function ScrollToTop() {
   }, [pathname]);
 
   return null;
+}
+
+function RouteFallback() {
+  return <div className="min-h-[240px] bg-neutral-50" />;
 }
 
 // Mini componente para a página pública
@@ -54,7 +59,11 @@ function PublicStore() {
       <main className="flex-1 flex flex-col">
         {routedTab === 'inicio' && <Hero />}
         {isProductPage ? <ProductDetail /> : routedTab === 'catalogo' && <Catalog />}
-        {routedTab === 'contato' && <ContactView />}
+        {routedTab === 'contato' && (
+          <Suspense fallback={<RouteFallback />}>
+            <ContactView />
+          </Suspense>
+        )}
       </main>
       <CartDrawer />
     </div>
@@ -73,16 +82,72 @@ export default function App() {
         <Route path="/contato" element={<PublicStore />} />
 
         {/* Rota pública de login admin */}
-        <Route path="/login" element={<LoginView />} />
+        <Route
+          path="/login"
+          element={(
+            <Suspense fallback={<RouteFallback />}>
+              <LoginView />
+            </Suspense>
+          )}
+        />
         {/* Rotas Privadas (Admin Layout) */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={(
+            <Suspense fallback={<RouteFallback />}>
+              <AdminLayout />
+            </Suspense>
+          )}
+        >
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<DashboardView />} />
-          <Route path="products" element={<ProductsListView />} />
-          <Route path="categories" element={<CategoriesView />} />
-          <Route path="media" element={<MediaView />} />
-          <Route path="highlights" element={<HighlightsView />} />
-          <Route path="settings" element={<SettingsView />} />
+          <Route
+            path="dashboard"
+            element={(
+              <Suspense fallback={<RouteFallback />}>
+                <DashboardView />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="products"
+            element={(
+              <Suspense fallback={<RouteFallback />}>
+                <ProductsListView />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="categories"
+            element={(
+              <Suspense fallback={<RouteFallback />}>
+                <CategoriesView />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="media"
+            element={(
+              <Suspense fallback={<RouteFallback />}>
+                <MediaView />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="highlights"
+            element={(
+              <Suspense fallback={<RouteFallback />}>
+                <HighlightsView />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="settings"
+            element={(
+              <Suspense fallback={<RouteFallback />}>
+                <SettingsView />
+              </Suspense>
+            )}
+          />
         </Route>
 
         {/* Fallback */}

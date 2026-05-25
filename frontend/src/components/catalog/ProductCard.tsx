@@ -6,9 +6,10 @@ import { useStore } from "../../store/useStore";
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export const ProductCard = memo(function ProductCard({ product }: ProductCardProps) {
+export const ProductCard = memo(function ProductCard({ product, priority = false }: ProductCardProps) {
   const addToCart = useStore((state) => state.addToCart);
   const navigate = useNavigate();
   const [wasAdded, setWasAdded] = useState(false);
@@ -43,8 +44,10 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
           <img
             src={product.imageUrl}
             alt={product.name}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
             decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
+            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             referrerPolicy="no-referrer"
           />

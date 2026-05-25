@@ -49,8 +49,54 @@ let cachedCatalog: {
 } | null = null;
 let pendingCatalogRequest: Promise<PublicCatalogBootstrapResponse> | null = null;
 const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000;
+const CATALOG_STORAGE_TTL_MS = 15 * 60 * 1000;
+const CATALOG_STORAGE_KEY = 'pulsefit-public-catalog-v2';
+
+function isCatalogPayload(value: unknown): value is PublicCatalogBootstrapResponse {
+  if (!value || typeof value !== 'object') return false;
+  const payload = value as PublicCatalogBootstrapResponse;
+  return Array.isArray(payload.categories) && Array.isArray(payload.products);
+}
+
+function readStoredCatalog() {
+  try {
+    const raw = window.localStorage.getItem(CATALOG_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as { expiresAt?: number; data?: unknown };
+    if (!parsed.expiresAt || parsed.expiresAt <= Date.now() || !isCatalogPayload(parsed.data)) {
+      window.localStorage.removeItem(CATALOG_STORAGE_KEY);
+      return null;
+    }
+
+    return {
+      expiresAt: parsed.expiresAt,
+      data: parsed.data,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredCatalog(data: PublicCatalogBootstrapResponse) {
+  try {
+    window.localStorage.setItem(
+      CATALOG_STORAGE_KEY,
+      JSON.stringify({
+        data,
+        expiresAt: Date.now() + CATALOG_STORAGE_TTL_MS,
+      }),
+    );
+  } catch {
+    // Storage can be unavailable in private mode or full devices.
+  }
+}
 
 export async function getPublicCatalogBootstrap() {
+  if (!cachedCatalog) {
+    cachedCatalog = readStoredCatalog();
+  }
+
   if (cachedCatalog && cachedCatalog.expiresAt > Date.now()) {
     return cachedCatalog.data;
   }
@@ -62,6 +108,7 @@ export async function getPublicCatalogBootstrap() {
           data,
           expiresAt: Date.now() + CATALOG_CACHE_TTL_MS,
         };
+        writeStoredCatalog(data);
         return data;
       })
       .finally(() => {

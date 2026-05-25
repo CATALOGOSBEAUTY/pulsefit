@@ -444,14 +444,14 @@ export function Catalog() {
         ) : (
           <div className="flex flex-col flex-1">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6 content-start mb-10 border-t border-neutral-200 pt-6">
-              {paginatedProducts.map((product) => (
+              {paginatedProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   layout
                 >
-                  <ProductCard product={product} />
+                  <ProductCard product={product} priority={currentPage === 1 && index < 4} />
                 </motion.div>
               ))}
             </div>

@@ -5,7 +5,9 @@ import { productSelect } from '../products/select.js';
 import { buildProductRelevanceMap } from './relevance.js';
 import type { OrderRelevanceSource, ProductRelevanceSource } from './relevance.js';
 
-const PUBLIC_CATALOG_CACHE_TTL_MS = 60_000;
+const PUBLIC_CATALOG_CACHE_TTL_MS = 5 * 60_000;
+const PUBLIC_CATALOG_STALE_TTL_MS = 30 * 60_000;
+const RELEVANCE_ORDER_LIMIT = 500;
 
 type PublicCatalogSnapshot = {
   categories: ReturnType<typeof mapCategory>[];
@@ -15,15 +17,14 @@ type PublicCatalogSnapshot = {
 let publicCatalogCache:
   | {
       expiresAt: number;
+      staleUntil: number;
       snapshot: PublicCatalogSnapshot;
     }
   | null = null;
 
-export async function loadPublicCatalogSnapshot(forceRefresh = false): Promise<PublicCatalogSnapshot> {
-  if (!forceRefresh && publicCatalogCache && publicCatalogCache.expiresAt > Date.now()) {
-    return publicCatalogCache.snapshot;
-  }
+let pendingPublicCatalogRefresh: Promise<PublicCatalogSnapshot> | null = null;
 
+async function refreshPublicCatalogSnapshot(): Promise<PublicCatalogSnapshot> {
   const supabase = getSupabaseAdmin();
   const [categoriesResult, productsResult, ordersResult] = await Promise.all([
     supabase
@@ -42,7 +43,8 @@ export async function loadPublicCatalogSnapshot(forceRefresh = false): Promise<P
       .from('orders')
       .select('status, created_at, order_items(product_id, quantity)')
       .neq('status', 'cancelled')
-      .order('created_at', { ascending: false }),
+      .order('created_at', { ascending: false })
+      .limit(RELEVANCE_ORDER_LIMIT),
   ]);
 
   const failed = [categoriesResult, productsResult, ordersResult].find((result) => result.error);
@@ -98,12 +100,43 @@ export async function loadPublicCatalogSnapshot(forceRefresh = false): Promise<P
 
   publicCatalogCache = {
     expiresAt: Date.now() + PUBLIC_CATALOG_CACHE_TTL_MS,
+    staleUntil: Date.now() + PUBLIC_CATALOG_STALE_TTL_MS,
     snapshot,
   };
 
   return snapshot;
 }
 
+function startPublicCatalogRefresh() {
+  if (!pendingPublicCatalogRefresh) {
+    pendingPublicCatalogRefresh = refreshPublicCatalogSnapshot().finally(() => {
+      pendingPublicCatalogRefresh = null;
+    });
+  }
+
+  return pendingPublicCatalogRefresh;
+}
+
+export async function loadPublicCatalogSnapshot(forceRefresh = false): Promise<PublicCatalogSnapshot> {
+  const now = Date.now();
+
+  if (!forceRefresh && publicCatalogCache && publicCatalogCache.expiresAt > now) {
+    return publicCatalogCache.snapshot;
+  }
+
+  if (!forceRefresh && publicCatalogCache && publicCatalogCache.staleUntil > now) {
+    void startPublicCatalogRefresh().catch(() => undefined);
+    return publicCatalogCache.snapshot;
+  }
+
+  return startPublicCatalogRefresh();
+}
+
 export function invalidatePublicCatalogCache() {
+  if (publicCatalogCache) {
+    publicCatalogCache.expiresAt = 0;
+    return;
+  }
+
   publicCatalogCache = null;
 }

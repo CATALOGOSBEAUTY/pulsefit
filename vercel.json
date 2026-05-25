@@ -46,7 +46,7 @@
         },
         {
           "key": "X-DNS-Prefetch-Control",
-          "value": "off"
+          "value": "on"
         },
         {
           "key": "Content-Security-Policy",

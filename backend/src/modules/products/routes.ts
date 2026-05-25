@@ -73,7 +73,7 @@ async function validateCategoryTree(categoryId: string, subcategoryId?: string |
 productRouter.get('/', async (req, res) => {
   try {
     assertPublicCatalogQuery(req.query);
-    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+    res.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=1800');
     const snapshot = await loadPublicCatalogSnapshot();
     return ok(res, snapshot.products);
   } catch (error) {

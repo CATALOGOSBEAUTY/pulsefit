@@ -73,7 +73,7 @@ async function loadMobileStore(slugInput: string) {
 
 mobileRouter.get('/store/:slug', async (req, res) => {
   try {
-    res.set('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+    res.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=1800');
     return ok(res, await loadMobileStore(req.params.slug));
   } catch (error) {
     return handleError(res, error);
