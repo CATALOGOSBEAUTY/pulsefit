@@ -120,6 +120,25 @@ function getPricingBand(product: Pick<ProductRow, 'slug' | 'title' | 'product_ty
   return { label: 'acessorios-gerais', min: 49.9, max: 89.99 };
 }
 
+function getEffectivePricingBand(product: ProductRow, audience: string, min: number, max: number): PricingBand {
+  if (audience === 'suplemento') {
+    return { label: 'suplementos', min, max };
+  }
+
+  const baseBand = getPricingBand(product);
+  const boundedBand = {
+    ...baseBand,
+    min: Math.max(baseBand.min, min),
+    max: Math.min(baseBand.max, max),
+  };
+
+  if (boundedBand.max < boundedBand.min) {
+    return { ...baseBand, min, max };
+  }
+
+  return boundedBand;
+}
+
 async function syncWorkspaceProducts(workspaceRoot: string, audience: string, pricesBySlug: Map<string, number>) {
   const productsPath = path.resolve(workspaceRoot, 'backend', 'catalog-workspace', audience, 'products.json');
   const checklistPath = path.resolve(workspaceRoot, 'backend', 'catalog-workspace', audience, 'activation-checklist.csv');
@@ -191,16 +210,7 @@ async function main() {
   }
 
   const pricing = products.map((product) => {
-    const baseBand = getPricingBand(product);
-    const boundedBand = {
-      ...baseBand,
-      min: Math.max(baseBand.min, min),
-      max: Math.min(baseBand.max, max),
-    };
-    if (boundedBand.max < boundedBand.min) {
-      boundedBand.min = min;
-      boundedBand.max = max;
-    }
+    const boundedBand = getEffectivePricingBand(product, audience, min, max);
     const nextPrice = choosePrice(product.slug, boundedBand);
     return {
       ...product,

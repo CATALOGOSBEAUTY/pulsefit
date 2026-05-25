@@ -11,6 +11,7 @@ import { mediaRouter } from './modules/media/routes.js';
 import { orderRouter } from './modules/orders/routes.js';
 import { dashboardRouter } from './modules/dashboard/routes.js';
 import { settingsRouter } from './modules/settings/routes.js';
+import { mobileRouter } from './modules/mobile/routes.js';
 import { rateLimit } from './middleware/rateLimit.js';
 import { securityHeaders } from './middleware/securityHeaders.js';
 import { rejectDangerousJson } from './middleware/jsonGuard.js';
@@ -65,6 +66,7 @@ app.use('/api/media', mediaRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/settings', settingsRouter);
+app.use('/api/mobile', mobileRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   return handleError(res, error);

@@ -1,0 +1,338 @@
+﻿{
+    "audience":  "feminino",
+    "generatedAt":  "2026-04-22T03:18:06.1666205Z",
+    "instructions":  [
+                         "Manifest aprovado para vincular imagens femininas. O script aplica imagens e marca ready; a ativacao exige preco real e imagem vinculada."
+                     ],
+    "images":  [
+                   {
+                       "slug":  "top-esportivo-alta-sustentacao",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-alta-sustentacao.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "top-esportivo-media-sustentacao",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-media-sustentacao.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "top-esportivo-baixa-sustentacao",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-baixa-sustentacao.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "top-esportivo-com-bojo",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-com-bojo.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "top-esportivo-sem-bojo",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-sem-bojo.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "top-esportivo-costas-nadador",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-costas-nadador.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "top-esportivo-tiras-cruzadas",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-tiras-cruzadas.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "top-esportivo-assimetrico",
+                       "imagePath":  "frontend/public/catalog/feminino/top-esportivo-assimetrico.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "camiseta-dry-fit-poliamida-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/camiseta-dry-fit-poliamida-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "cropped-manga-curta-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/cropped-manga-curta-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "cropped-manga-longa-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/cropped-manga-longa-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "cropped-regata-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/cropped-regata-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "regata-cavada-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/regata-cavada-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "regata-nadador-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/regata-nadador-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "regata-respiravel-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/regata-respiravel-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "camiseta-compressao-termica-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/camiseta-compressao-termica-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "legging-cintura-alta-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/legging-cintura-alta-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "legging-cos-v-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/legging-cos-v-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "legging-scrunch-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/legging-scrunch-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "legging-sem-costura-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/legging-sem-costura-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "legging-com-bolso-lateral-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/legging-com-bolso-lateral-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "calca-jogger-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/calca-jogger-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "calca-moletom-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/calca-moletom-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "short-ciclista-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/short-ciclista-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "short-duplo-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/short-duplo-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "short-saia-esportivo-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/short-saia-esportivo-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "short-microcurto-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/short-microcurto-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "macacao-longo-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/macacao-longo-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "macaquinho-curto-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/macaquinho-curto-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "conjunto-top-legging-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/conjunto-top-legging-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "conjunto-top-short-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/conjunto-top-short-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "body-esportivo-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/body-esportivo-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "corta-vento-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/corta-vento-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "jaqueta-esportiva-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/jaqueta-esportiva-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "casaco-com-ziper-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/casaco-com-ziper-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "tenis-treino-forca-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/tenis-treino-forca-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "tenis-corrida-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/tenis-corrida-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "bolsa-esportiva-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/bolsa-esportiva-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "mochila-fitness-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/mochila-fitness-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "luva-treino-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/luva-treino-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "grip-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/grip-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "meia-esportiva-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/meia-esportiva-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "munhequeira-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/munhequeira-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "faixa-cabelo-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/faixa-cabelo-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "elastico-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/elastico-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "garrafa-feminina",
+                       "imagePath":  "frontend/public/catalog/feminino/garrafa-feminina.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   },
+                   {
+                       "slug":  "fortalecedor-pegada-feminino",
+                       "imagePath":  "frontend/public/catalog/feminino/fortalecedor-pegada-feminino.png",
+                       "imageUrl":  "",
+                       "approved":  true,
+                       "notes":  "imagem isolada de catalogo aprovada para primeira carga"
+                   }
+               ]
+}

@@ -1,0 +1,387 @@
+{
+  "audience": "feminino",
+  "generatedAt": "2026-04-22T02:03:04.668Z",
+  "instructions": [
+    "Preencha imagePath com um arquivo local ou imageUrl com uma URL publica para cada produto aprovado.",
+    "Mantenha approved=false enquanto a imagem nao foi revisada.",
+    "O script apply-images nunca ativa produtos; ele apenas vincula imagem e move catalog_status para ready."
+  ],
+  "images": [
+    {
+      "slug": "top-esportivo-alta-sustentacao",
+      "title": "Top esportivo alta sustentacao",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "top-esportivo-media-sustentacao",
+      "title": "Top esportivo media sustentacao",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "top-esportivo-baixa-sustentacao",
+      "title": "Top esportivo baixa sustentacao",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "top-esportivo-com-bojo",
+      "title": "Top esportivo com bojo",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "top-esportivo-sem-bojo",
+      "title": "Top esportivo sem bojo",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "top-esportivo-costas-nadador",
+      "title": "Top esportivo costas nadador",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "top-esportivo-tiras-cruzadas",
+      "title": "Top esportivo tiras cruzadas",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "top-esportivo-assimetrico",
+      "title": "Top esportivo assimetrico",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "camiseta-dry-fit-poliamida-feminina",
+      "title": "Camiseta dry-fit poliamida feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "cropped-manga-curta-feminino",
+      "title": "Cropped manga curta feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "cropped-manga-longa-feminino",
+      "title": "Cropped manga longa feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "cropped-regata-feminino",
+      "title": "Cropped regata feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "regata-cavada-feminina",
+      "title": "Regata cavada feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "regata-nadador-feminina",
+      "title": "Regata nadador feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "regata-respiravel-feminina",
+      "title": "Regata respiravel feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "camiseta-compressao-termica-feminina",
+      "title": "Camiseta compressao termica feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "legging-cintura-alta-feminina",
+      "title": "Legging cintura alta feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "legging-cos-v-feminina",
+      "title": "Legging cos em V feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "legging-scrunch-feminina",
+      "title": "Legging scrunch feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "legging-sem-costura-feminina",
+      "title": "Legging sem costura feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "legging-com-bolso-lateral-feminina",
+      "title": "Legging com bolso lateral feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "calca-jogger-feminina",
+      "title": "Calca jogger feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "calca-moletom-feminina",
+      "title": "Calca de moletom feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "short-ciclista-feminino",
+      "title": "Short ciclista feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "short-duplo-feminino",
+      "title": "Short duplo feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "short-saia-esportivo-feminino",
+      "title": "Short saia esportivo feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "short-microcurto-feminino",
+      "title": "Short microcurto feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "macacao-longo-feminino",
+      "title": "Macacao longo fitness feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "macaquinho-curto-feminino",
+      "title": "Macaquinho curto fitness feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "conjunto-top-legging-feminino",
+      "title": "Conjunto top e legging feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "conjunto-top-short-feminino",
+      "title": "Conjunto top e short feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "body-esportivo-feminino",
+      "title": "Body esportivo feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "corta-vento-feminino",
+      "title": "Corta-vento feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "jaqueta-esportiva-feminina",
+      "title": "Jaqueta esportiva feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "casaco-com-ziper-feminino",
+      "title": "Casaco com ziper feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "tenis-treino-forca-feminino",
+      "title": "Tenis de treino de forca feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "tenis-corrida-feminino",
+      "title": "Tenis de corrida feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "bolsa-esportiva-feminina",
+      "title": "Bolsa esportiva feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "mochila-fitness-feminina",
+      "title": "Mochila fitness feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "luva-treino-feminina",
+      "title": "Luva de treino feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "grip-feminino",
+      "title": "Grip feminino para treino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "meia-esportiva-feminina",
+      "title": "Meia esportiva feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "munhequeira-feminina",
+      "title": "Munhequeira feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "faixa-cabelo-feminina",
+      "title": "Faixa de cabelo esportiva feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "elastico-feminino",
+      "title": "Elastico esportivo feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "garrafa-feminina",
+      "title": "Garrafa esportiva feminina",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    },
+    {
+      "slug": "fortalecedor-pegada-feminino",
+      "title": "Fortalecedor de pegada feminino",
+      "imagePath": "",
+      "imageUrl": "",
+      "approved": false,
+      "notes": ""
+    }
+  ]
+}

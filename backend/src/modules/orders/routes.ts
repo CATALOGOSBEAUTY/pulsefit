@@ -28,10 +28,14 @@ function formatWhatsAppMessage(order: any, items: any[]) {
   message += `Nome: ${order.customer_name}\\n`;
   message += `WhatsApp: ${order.customer_phone || 'Nao informado'}\\n`;
   if (order.fulfillment_type === 'delivery') {
-    message += `Endereco: ${order.address}, ${order.number}${order.complement ? ` - ${order.complement}` : ''}\\n`;
-    message += `Bairro: ${order.neighborhood}\\n`;
-    message += `Cidade/UF: ${order.city || order.region}${order.state ? `/${order.state}` : ''}\\n`;
-    message += `CEP: ${order.cep}\\n`;
+    if (order.reference_point === 'Entrega a combinar pelo WhatsApp') {
+      message += 'Entrega: a combinar pelo WhatsApp\\n';
+    } else {
+      message += `Endereco: ${order.address}, ${order.number}${order.complement ? ` - ${order.complement}` : ''}\\n`;
+      message += `Bairro: ${order.neighborhood}\\n`;
+      message += `Cidade/UF: ${order.city || order.region}${order.state ? `/${order.state}` : ''}\\n`;
+      message += `CEP: ${order.cep}\\n`;
+    }
     if (order.reference_point) message += `Referencia: ${order.reference_point}\\n`;
   }
   message += '\\n';
@@ -102,13 +106,14 @@ orderRouter.post('/', async (req, res) => {
 
     const total = normalizedItems.reduce((sum: number, item: NormalizedOrderItem) => sum + item.subtotal, 0);
     const fulfillmentType = customer.fulfillmentType === 'pickup' || customer.fulfillment_type === 'pickup' ? 'pickup' : 'delivery';
+    const deliveryToBeArranged = Boolean(customer.deliveryToBeArranged ?? customer.delivery_to_be_arranged);
     const paymentMethod = ['cash', 'pix', 'card'].includes(customer.paymentMethod ?? customer.payment_method)
       ? customer.paymentMethod ?? customer.payment_method
       : 'pix';
     const customerName = requireString(customer.fullName ?? customer.customer_name, 'fullName');
     const customerPhone = requireString(customer.phone ?? customer.customer_phone, 'phone');
 
-    if (fulfillmentType === 'delivery') {
+    if (fulfillmentType === 'delivery' && !deliveryToBeArranged) {
       requireString(customer.cep, 'cep');
       requireString(customer.address, 'address');
       requireString(customer.number, 'number');
@@ -122,15 +127,15 @@ orderRouter.post('/', async (req, res) => {
       customer_phone: customerPhone,
       fulfillment_type: fulfillmentType,
       payment_method: paymentMethod,
-      cep: optionalString(customer.cep),
-      address: optionalString(customer.address),
-      number: optionalString(customer.number),
+      cep: deliveryToBeArranged ? '00000000' : optionalString(customer.cep),
+      address: deliveryToBeArranged ? 'A combinar pelo WhatsApp' : optionalString(customer.address),
+      number: deliveryToBeArranged ? 'S/N' : optionalString(customer.number),
       complement: optionalString(customer.complement),
-      neighborhood: optionalString(customer.neighborhood),
-      region: optionalString(customer.region ?? customer.city),
-      city: optionalString(customer.city),
+      neighborhood: deliveryToBeArranged ? 'A combinar' : optionalString(customer.neighborhood),
+      region: deliveryToBeArranged ? 'A combinar' : optionalString(customer.region ?? customer.city),
+      city: deliveryToBeArranged ? 'A combinar' : optionalString(customer.city),
       state: optionalString(customer.state),
-      reference_point: optionalString(customer.referencePoint ?? customer.reference_point),
+      reference_point: deliveryToBeArranged ? 'Entrega a combinar pelo WhatsApp' : optionalString(customer.referencePoint ?? customer.reference_point),
       total_amount: total,
       status: 'new',
     };
@@ -159,6 +164,38 @@ orderRouter.get('/', requireAuth, async (_req, res) => {
 
     if (error) throw error;
     return ok(res, data ?? []);
+  } catch (error) {
+    return handleError(res, error);
+  }
+});
+
+orderRouter.patch('/:id/status', requireAuth, async (req, res) => {
+  try {
+    const statusMap: Record<string, string> = {
+      new: 'new',
+      confirmed: 'confirmed',
+      paid: 'paid',
+      sent: 'sent',
+      cancelled: 'cancelled',
+      'Aguardando WhatsApp': 'new',
+      Confirmado: 'confirmed',
+      'Em separacao': 'confirmed',
+      'Saiu para entrega': 'sent',
+      Entregue: 'paid',
+      Cancelado: 'cancelled',
+    };
+    const nextStatus = statusMap[String(req.body.status)];
+    if (!nextStatus) throw new ApiError(400, 'Status de pedido invalido.');
+
+    const { data, error } = await getSupabaseAdmin()
+      .from('orders')
+      .update({ status: nextStatus, updated_at: new Date().toISOString() })
+      .eq('id', req.params.id)
+      .select('*, order_items(*)')
+      .single();
+
+    if (error) throw error;
+    return ok(res, data);
   } catch (error) {
     return handleError(res, error);
   }

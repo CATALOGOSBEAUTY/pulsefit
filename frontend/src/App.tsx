@@ -8,6 +8,7 @@ import { CategoriesView } from './modules/categories/views/CategoriesView';
 import { MediaView } from './modules/media/views/MediaView';
 import { HighlightsView } from './modules/highlights/views/HighlightsView';
 import { SettingsView } from './modules/settings/views/SettingsView';
+import { ContactView } from './modules/contact/views/ContactView';
 import { Header } from './components/layout/Header';
 import { Hero } from './components/hero/Hero';
 import { Catalog } from './components/catalog/Catalog';
@@ -53,11 +54,7 @@ function PublicStore() {
       <main className="flex-1 flex flex-col">
         {routedTab === 'inicio' && <Hero />}
         {isProductPage ? <ProductDetail /> : routedTab === 'catalogo' && <Catalog />}
-        {routedTab === 'contato' && (
-          <div className="flex-1 flex items-center justify-center p-8 text-neutral-500">
-             Módulo de Contato será inserido aqui.
-          </div>
-        )}
+        {routedTab === 'contato' && <ContactView />}
       </main>
       <CartDrawer />
     </div>

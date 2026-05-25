@@ -47,4 +47,3 @@ export async function bulkUpdateProductStock(productIds: string[], stockQuantity
     body: JSON.stringify({ productIds, stockQuantity }),
   });
 }
-

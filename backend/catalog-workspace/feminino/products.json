@@ -1,0 +1,942 @@
+[
+  {
+    "slug": "top-esportivo-alta-sustentacao",
+    "title": "Top esportivo alta sustentacao",
+    "description": "Top fitness feminino com sustentacao reforcada para treinos de impacto e performance.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Alta sustentacao",
+    "features": [
+      "sustentacao reforcada",
+      "tecido firme de alta compressao",
+      "base larga para maior estabilidade"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo alta sustentacao, sustentacao reforcada, tecido firme de alta compressao, base larga para maior estabilidade, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "top-esportivo-media-sustentacao",
+    "title": "Top esportivo media sustentacao",
+    "description": "Top fitness feminino de media sustentacao para treinos funcionais e uso diario.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Media sustentacao",
+    "features": [
+      "suporte equilibrado",
+      "elasticidade confortavel",
+      "acabamento anatomico"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo media sustentacao, suporte equilibrado, elasticidade confortavel, acabamento anatomico, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "top-esportivo-baixa-sustentacao",
+    "title": "Top esportivo baixa sustentacao",
+    "description": "Top fitness feminino leve para yoga, pilates e rotinas de baixo impacto.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Baixa sustentacao",
+    "features": [
+      "toque macio",
+      "estrutura leve",
+      "uso em treinos suaves"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo baixa sustentacao, toque macio, estrutura leve, uso em treinos suaves, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "top-esportivo-com-bojo",
+    "title": "Top esportivo com bojo",
+    "description": "Top fitness feminino com bojo removivel e visual limpo de academia premium.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Com bojo",
+    "features": [
+      "bojo removivel",
+      "acabamento estruturado",
+      "modelagem firme"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo com bojo, bojo removivel, acabamento estruturado, modelagem firme, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "top-esportivo-sem-bojo",
+    "title": "Top esportivo sem bojo",
+    "description": "Top fitness feminino sem bojo para quem busca leveza e caimento natural.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Sem bojo",
+    "features": [
+      "caimento natural",
+      "forro leve",
+      "conforto para uso prolongado"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo sem bojo, caimento natural, forro leve, conforto para uso prolongado, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "top-esportivo-costas-nadador",
+    "title": "Top esportivo costas nadador",
+    "description": "Top fitness feminino com costas nadador para liberdade de movimento no treino.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Costas nadador",
+    "features": [
+      "costas estilo nadador",
+      "mobilidade ampla",
+      "visual esportivo tecnico"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo costas nadador, costas estilo nadador, mobilidade ampla, visual esportivo tecnico, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "top-esportivo-tiras-cruzadas",
+    "title": "Top esportivo tiras cruzadas",
+    "description": "Top fitness feminino com tiras cruzadas e design premium para vitrine de catalogo.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Tiras cruzadas",
+    "features": [
+      "alcas cruzadas",
+      "detalhe visual sofisticado",
+      "sustentacao com estilo"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo tiras cruzadas, alcas cruzadas, detalhe visual sofisticado, sustentacao com estilo, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "top-esportivo-assimetrico",
+    "title": "Top esportivo assimetrico",
+    "description": "Top fitness feminino assimetrico com recorte moderno e apelo fashion esportivo.",
+    "category": "Feminina",
+    "subcategory": "Tops Esportivos",
+    "audience": "feminino",
+    "productType": "top esportivo",
+    "variation": "Assimetrico",
+    "features": [
+      "recorte moderno",
+      "design fashion fitness",
+      "acabamento minimalista"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Top esportivo assimetrico, recorte moderno, design fashion fitness, acabamento minimalista, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "camiseta-dry-fit-poliamida-feminina",
+    "title": "Camiseta dry-fit poliamida feminina",
+    "description": "Camiseta feminina de treino em tecido dry-fit com toque leve e secagem rapida.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "camiseta esportiva",
+    "variation": "Dry-fit / Poliamida",
+    "features": [
+      "tecido dry-fit",
+      "toque macio",
+      "respirabilidade para treino"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Camiseta dry-fit poliamida feminina, tecido dry-fit, toque macio, respirabilidade para treino, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "cropped-manga-curta-feminino",
+    "title": "Cropped manga curta feminino",
+    "description": "Cropped feminino esportivo de manga curta com visual contemporaneo de academia.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "cropped esportivo",
+    "variation": "Manga curta",
+    "features": [
+      "comprimento cropped",
+      "manga curta",
+      "caimento esportivo atual"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Cropped manga curta feminino, comprimento cropped, manga curta, caimento esportivo atual, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "cropped-manga-longa-feminino",
+    "title": "Cropped manga longa feminino",
+    "description": "Cropped feminino esportivo de manga longa para treinos com cobertura extra.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "cropped esportivo",
+    "variation": "Manga longa",
+    "features": [
+      "manga longa",
+      "silhueta ajustada",
+      "uso em dias amenos"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Cropped manga longa feminino, manga longa, silhueta ajustada, uso em dias amenos, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "cropped-regata-feminino",
+    "title": "Cropped regata feminino",
+    "description": "Cropped regata feminino com proposta leve e visual de moda fitness comercial.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "cropped regata",
+    "variation": "Regata",
+    "features": [
+      "regata cropped",
+      "leveza para treinar",
+      "visual moderno"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Cropped regata feminino, regata cropped, leveza para treinar, visual moderno, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "regata-cavada-feminina",
+    "title": "Regata cavada feminina",
+    "description": "Regata feminina cavada com cava ampla e estilo de treino respiravel.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "regata esportiva",
+    "variation": "Cavada",
+    "features": [
+      "cava ampla",
+      "caimento soltinho",
+      "ideal para musculacao"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Regata cavada feminina, cava ampla, caimento soltinho, ideal para musculacao, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "regata-nadador-feminina",
+    "title": "Regata nadador feminina",
+    "description": "Regata feminina com costas nadador e modelagem esportiva versatil.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "regata esportiva",
+    "variation": "Costas nadador",
+    "features": [
+      "costas nadador",
+      "mobilidade total",
+      "tecido leve"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Regata nadador feminina, costas nadador, mobilidade total, tecido leve, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "regata-respiravel-feminina",
+    "title": "Regata respiravel feminina",
+    "description": "Regata feminina em tela respiravel para treinos quentes e alta ventilacao.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "regata esportiva",
+    "variation": "Tela respiravel",
+    "features": [
+      "painel respiravel",
+      "ventilacao elevada",
+      "leveza no uso"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Regata respiravel feminina, painel respiravel, ventilacao elevada, leveza no uso, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "camiseta-compressao-termica-feminina",
+    "title": "Camiseta compressao termica feminina",
+    "description": "Camiseta feminina de compressao termica para performance e base layer de treino.",
+    "category": "Feminina",
+    "subcategory": "Camisetas, Regatas e Croppeds",
+    "audience": "feminino",
+    "productType": "camiseta de compressao",
+    "variation": "Compressao / Termica",
+    "features": [
+      "compressao suave",
+      "manga ajustada",
+      "efeito termico leve"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Camiseta compressao termica feminina, compressao suave, manga ajustada, efeito termico leve, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "legging-cintura-alta-feminina",
+    "title": "Legging cintura alta feminina",
+    "description": "Legging feminina cintura alta com visual limpo e seguranca para treino.",
+    "category": "Feminina",
+    "subcategory": "Leggings e Calcas",
+    "audience": "feminino",
+    "productType": "legging",
+    "variation": "Cintura alta",
+    "features": [
+      "cintura alta",
+      "compressao moderada",
+      "caimento anatomico"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Legging cintura alta feminina, cintura alta, compressao moderada, caimento anatomico, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "legging-cos-v-feminina",
+    "title": "Legging cos em V feminina",
+    "description": "Legging feminina com cos em V para valorizar a silhueta na linha fitness.",
+    "category": "Feminina",
+    "subcategory": "Leggings e Calcas",
+    "audience": "feminino",
+    "productType": "legging",
+    "variation": "Cos em V",
+    "features": [
+      "cos em V",
+      "modelagem valorizadora",
+      "acabamento premium"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Legging cos em V feminina, cos em V, modelagem valorizadora, acabamento premium, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "legging-scrunch-feminina",
+    "title": "Legging scrunch feminina",
+    "description": "Legging feminina com detalhe scrunch para efeito empina bumbum comercial.",
+    "category": "Feminina",
+    "subcategory": "Leggings e Calcas",
+    "audience": "feminino",
+    "productType": "legging",
+    "variation": "Scrunch",
+    "features": [
+      "efeito scrunch traseiro",
+      "cintura firme",
+      "tecido flexivel"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Legging scrunch feminina, efeito scrunch traseiro, cintura firme, tecido flexivel, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "legging-sem-costura-feminina",
+    "title": "Legging sem costura feminina",
+    "description": "Legging feminina seamless com visual moderno e conforto elevado.",
+    "category": "Feminina",
+    "subcategory": "Leggings e Calcas",
+    "audience": "feminino",
+    "productType": "legging",
+    "variation": "Sem costura",
+    "features": [
+      "construcao seamless",
+      "elasticidade elevada",
+      "acabamento limpo"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Legging sem costura feminina, construcao seamless, elasticidade elevada, acabamento limpo, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "legging-com-bolso-lateral-feminina",
+    "title": "Legging com bolso lateral feminina",
+    "description": "Legging feminina com bolso lateral funcional para treino e rotina.",
+    "category": "Feminina",
+    "subcategory": "Leggings e Calcas",
+    "audience": "feminino",
+    "productType": "legging",
+    "variation": "Bolso lateral",
+    "features": [
+      "bolso lateral util",
+      "cintura alta",
+      "tecido firme"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Legging com bolso lateral feminina, bolso lateral util, cintura alta, tecido firme, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "calca-jogger-feminina",
+    "title": "Calca jogger feminina",
+    "description": "Calca jogger feminina esportiva com punho e visual casual de academia.",
+    "category": "Feminina",
+    "subcategory": "Leggings e Calcas",
+    "audience": "feminino",
+    "productType": "calca jogger",
+    "variation": null,
+    "features": [
+      "modelagem jogger",
+      "punho ajustado",
+      "estilo athleisure"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Calca jogger feminina, modelagem jogger, punho ajustado, estilo athleisure, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "calca-moletom-feminina",
+    "title": "Calca de moletom feminina",
+    "description": "Calca feminina de moletom para deslocamento, aquecimento e lifestyle fitness.",
+    "category": "Feminina",
+    "subcategory": "Leggings e Calcas",
+    "audience": "feminino",
+    "productType": "calca de moletom",
+    "variation": null,
+    "features": [
+      "malha de moletom",
+      "conforto casual",
+      "cintura elastica"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Calca de moletom feminina, malha de moletom, conforto casual, cintura elastica, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "short-ciclista-feminino",
+    "title": "Short ciclista feminino",
+    "description": "Short ciclista feminino com ajuste firme e proposta classica de treino.",
+    "category": "Feminina",
+    "subcategory": "Shorts e Bermudas",
+    "audience": "feminino",
+    "productType": "short ciclista",
+    "variation": null,
+    "features": [
+      "comprimento ciclista",
+      "compressao moderada",
+      "cintura alta"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Short ciclista feminino, comprimento ciclista, compressao moderada, cintura alta, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "short-duplo-feminino",
+    "title": "Short duplo feminino",
+    "description": "Short feminino com camada externa leve e compressao interna para performance.",
+    "category": "Feminina",
+    "subcategory": "Shorts e Bermudas",
+    "audience": "feminino",
+    "productType": "short duplo",
+    "variation": "Compressao interna",
+    "features": [
+      "duas camadas",
+      "forro compressivo",
+      "mobilidade para corrida"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Short duplo feminino, duas camadas, forro compressivo, mobilidade para corrida, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "short-saia-esportivo-feminino",
+    "title": "Short saia esportivo feminino",
+    "description": "Short saia feminino esportivo com visual premium para treino e lifestyle.",
+    "category": "Feminina",
+    "subcategory": "Shorts e Bermudas",
+    "audience": "feminino",
+    "productType": "short saia",
+    "variation": null,
+    "features": [
+      "saia com short interno",
+      "estetica feminina esportiva",
+      "movimento livre"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Short saia esportivo feminino, saia com short interno, estetica feminina esportiva, movimento livre, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "short-microcurto-feminino",
+    "title": "Short microcurto feminino",
+    "description": "Short feminino microcurto com modelagem ajustada para treinos intensos.",
+    "category": "Feminina",
+    "subcategory": "Shorts e Bermudas",
+    "audience": "feminino",
+    "productType": "short esportivo",
+    "variation": "Microcurto",
+    "features": [
+      "comprimento reduzido",
+      "visual de performance",
+      "tecido elastico"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Short microcurto feminino, comprimento reduzido, visual de performance, tecido elastico, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "macacao-longo-feminino",
+    "title": "Macacao longo fitness feminino",
+    "description": "Macacao longo feminino com visual de moda fitness premium e silhueta ajustada.",
+    "category": "Feminina",
+    "subcategory": "Pecas Unicas e Conjuntos",
+    "audience": "feminino",
+    "productType": "macacao fitness",
+    "variation": "Longo",
+    "features": [
+      "peca unica longa",
+      "ajuste ao corpo",
+      "visual sofisticado"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Macacao longo fitness feminino, peca unica longa, ajuste ao corpo, visual sofisticado, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "macaquinho-curto-feminino",
+    "title": "Macaquinho curto fitness feminino",
+    "description": "Macaquinho curto feminino com proposta moderna para treino e vitrine.",
+    "category": "Feminina",
+    "subcategory": "Pecas Unicas e Conjuntos",
+    "audience": "feminino",
+    "productType": "macaquinho fitness",
+    "variation": "Curto",
+    "features": [
+      "peca unica curta",
+      "caimento ajustado",
+      "design funcional"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Macaquinho curto fitness feminino, peca unica curta, caimento ajustado, design funcional, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "conjunto-top-legging-feminino",
+    "title": "Conjunto top e legging feminino",
+    "description": "Conjunto fitness feminino completo com top e legging para vitrine coordenada.",
+    "category": "Feminina",
+    "subcategory": "Pecas Unicas e Conjuntos",
+    "audience": "feminino",
+    "productType": "conjunto fitness",
+    "variation": "Top + Legging",
+    "features": [
+      "look coordenado",
+      "top e legging combinando",
+      "estilo premium"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Conjunto top e legging feminino, look coordenado, top e legging combinando, estilo premium, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "conjunto-top-short-feminino",
+    "title": "Conjunto top e short feminino",
+    "description": "Conjunto fitness feminino com top e short para proposta leve de treino.",
+    "category": "Feminina",
+    "subcategory": "Pecas Unicas e Conjuntos",
+    "audience": "feminino",
+    "productType": "conjunto fitness",
+    "variation": "Top + Short",
+    "features": [
+      "look coordenado",
+      "top e short combinando",
+      "visual versatil"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Conjunto top e short feminino, look coordenado, top e short combinando, visual versatil, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "body-esportivo-feminino",
+    "title": "Body esportivo feminino",
+    "description": "Body fitness feminino com visual limpo e estrutura para composicao premium.",
+    "category": "Feminina",
+    "subcategory": "Pecas Unicas e Conjuntos",
+    "audience": "feminino",
+    "productType": "body esportivo",
+    "variation": null,
+    "features": [
+      "peca unica ajustada",
+      "visual minimalista",
+      "base para treino e lifestyle"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Body esportivo feminino, peca unica ajustada, visual minimalista, base para treino e lifestyle, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "corta-vento-feminino",
+    "title": "Corta-vento feminino",
+    "description": "Jaqueta corta-vento feminina leve para aquecimento e deslocamento esportivo.",
+    "category": "Feminina",
+    "subcategory": "Casacos Esportivos",
+    "audience": "feminino",
+    "productType": "corta-vento",
+    "variation": null,
+    "features": [
+      "tecido leve",
+      "protege do vento",
+      "visual esportivo"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Corta-vento feminino, tecido leve, protege do vento, visual esportivo, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "jaqueta-esportiva-feminina",
+    "title": "Jaqueta esportiva feminina",
+    "description": "Jaqueta feminina esportiva leve para compor a linha de casacos fitness.",
+    "category": "Feminina",
+    "subcategory": "Casacos Esportivos",
+    "audience": "feminino",
+    "productType": "jaqueta esportiva",
+    "variation": null,
+    "features": [
+      "acabamento premium",
+      "estrutura leve",
+      "uso sobreposto"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Jaqueta esportiva feminina, acabamento premium, estrutura leve, uso sobreposto, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "casaco-com-ziper-feminino",
+    "title": "Casaco com ziper feminino",
+    "description": "Casaco feminino com ziper frontal para academia e lifestyle esportivo.",
+    "category": "Feminina",
+    "subcategory": "Casacos Esportivos",
+    "audience": "feminino",
+    "productType": "casaco esportivo",
+    "variation": "Com ziper",
+    "features": [
+      "ziper frontal",
+      "caimento confortavel",
+      "versatilidade no uso"
+    ],
+    "imagePrompt": "Foto de produto realista de moda fitness feminino do item Casaco com ziper feminino, ziper frontal, caimento confortavel, versatilidade no uso, tecido com aparencia premium, caimento comercial de loja, peca isolada, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "tenis-treino-forca-feminino",
+    "title": "Tenis de treino de forca feminino",
+    "description": "Tenis feminino para treino de forca e musculacao com base estavel.",
+    "category": "Feminina",
+    "subcategory": "Calcados Femininos",
+    "audience": "feminino",
+    "productType": "tenis de treino",
+    "variation": "Forca / Musculacao",
+    "features": [
+      "base estavel",
+      "cabedal esportivo",
+      "foco em apoio"
+    ],
+    "imagePrompt": "Foto de catalogo realista do calcado Tenis de treino de forca feminino para publico feminino, par de tenis centralizado, visual esportivo comercial, materiais nítidos, base estavel, cabedal esportivo, foco em apoio, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "tenis-corrida-feminino",
+    "title": "Tenis de corrida feminino",
+    "description": "Tenis feminino para corrida e esteira com visual leve e comercial.",
+    "category": "Feminina",
+    "subcategory": "Calcados Femininos",
+    "audience": "feminino",
+    "productType": "tenis de corrida",
+    "variation": "Corrida / Esteira",
+    "features": [
+      "perfil mais leve",
+      "visual dinamico",
+      "solado esportivo"
+    ],
+    "imagePrompt": "Foto de catalogo realista do calcado Tenis de corrida feminino para publico feminino, par de tenis centralizado, visual esportivo comercial, materiais nítidos, perfil mais leve, visual dinamico, solado esportivo, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "bolsa-esportiva-feminina",
+    "title": "Bolsa esportiva feminina",
+    "description": "Bolsa feminina esportiva com capacidade pratica para academia.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "bolsa esportiva",
+    "variation": null,
+    "features": [
+      "alcas resistentes",
+      "espaco interno funcional",
+      "visual fitness premium"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Bolsa esportiva feminina para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, alcas resistentes, espaco interno funcional, visual fitness premium, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "mochila-fitness-feminina",
+    "title": "Mochila fitness feminina",
+    "description": "Mochila feminina esportiva para treino, rotina e deslocamento.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "mochila",
+    "variation": null,
+    "features": [
+      "compartimentos funcionais",
+      "alcas confortaveis",
+      "estilo esportivo"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Mochila fitness feminina para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, compartimentos funcionais, alcas confortaveis, estilo esportivo, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "luva-treino-feminina",
+    "title": "Luva de treino feminina",
+    "description": "Luva feminina para treino com pegada segura e visual de academia.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "luva de treino",
+    "variation": null,
+    "features": [
+      "palma reforcada",
+      "melhor pegada",
+      "acabamento esportivo"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Luva de treino feminina para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, palma reforcada, melhor pegada, acabamento esportivo, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "grip-feminino",
+    "title": "Grip feminino para treino",
+    "description": "Grip feminino para treinos de barra e puxada com protecao da palma.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "grip",
+    "variation": null,
+    "features": [
+      "protecao da palma",
+      "uso em barra",
+      "design funcional"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Grip feminino para treino para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, protecao da palma, uso em barra, design funcional, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "meia-esportiva-feminina",
+    "title": "Meia esportiva feminina",
+    "description": "Meia feminina esportiva com ajuste confortavel para treino e rotina.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "meia esportiva",
+    "variation": null,
+    "features": [
+      "cano esportivo",
+      "toque confortavel",
+      "uso versatil"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Meia esportiva feminina para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, cano esportivo, toque confortavel, uso versatil, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "munhequeira-feminina",
+    "title": "Munhequeira feminina",
+    "description": "Munhequeira feminina para suporte leve durante exercicios e treino funcional.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "munhequeira",
+    "variation": null,
+    "features": [
+      "suporte leve",
+      "ajuste com firmeza",
+      "uso fitness"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Munhequeira feminina para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, suporte leve, ajuste com firmeza, uso fitness, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "faixa-cabelo-feminina",
+    "title": "Faixa de cabelo esportiva feminina",
+    "description": "Faixa de cabelo feminina para treino com visual clean e funcional.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "faixa de cabelo",
+    "variation": null,
+    "features": [
+      "fixacao confortavel",
+      "visual minimalista",
+      "uso esportivo"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Faixa de cabelo esportiva feminina para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, fixacao confortavel, visual minimalista, uso esportivo, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "elastico-feminino",
+    "title": "Elastico esportivo feminino",
+    "description": "Elastico funcional feminino para treino e composicao de acessorios fitness.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "elastico",
+    "variation": null,
+    "features": [
+      "uso funcional",
+      "material elastico",
+      "acessorio de treino"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Elastico esportivo feminino para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, uso funcional, material elastico, acessorio de treino, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "garrafa-feminina",
+    "title": "Garrafa esportiva feminina",
+    "description": "Garrafa feminina esportiva para hidratacao com visual premium.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "garrafa esportiva",
+    "variation": null,
+    "features": [
+      "corpo rigido",
+      "tampa pratica",
+      "uso em academia"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Garrafa esportiva feminina para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, corpo rigido, tampa pratica, uso em academia, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  },
+  {
+    "slug": "fortalecedor-pegada-feminino",
+    "title": "Fortalecedor de pegada feminino",
+    "description": "Fortalecedor de pegada feminino para treino de antebraco e forca manual.",
+    "category": "Feminina",
+    "subcategory": "Acessorios Femininos",
+    "audience": "feminino",
+    "productType": "fortalecedor de pegada",
+    "variation": null,
+    "features": [
+      "resistencia manual",
+      "uso em pegada",
+      "tamanho compacto"
+    ],
+    "imagePrompt": "Foto de produto realista do acessorio fitness Fortalecedor de pegada feminino para publico feminino, detalhes claramente visiveis, produto isolado, recorte limpo, resistencia manual, uso em pegada, tamanho compacto, catalogo profissional de e-commerce, fundo totalmente branco, iluminacao de estudio, produto centralizado, alta definicao, aparencia realista e comercial, sem texto, sem marca d agua, sem elementos extras, sem marcas famosas copiadas",
+    "catalogStatus": "draft",
+    "isActive": false,
+    "price": 0,
+    "stockQuantity": 0
+  }
+]
