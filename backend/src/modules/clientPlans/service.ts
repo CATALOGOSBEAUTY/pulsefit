@@ -82,7 +82,7 @@ const CLIENT_PLANS: ClientPlanDefinition[] = [
     monthlyPriceCents: 74_990,
     loyaltyMonths: 6,
     limits: {
-      maxProducts: 450,
+      maxProducts: null,
       maxCategories: 20,
       maxSubcategories: 20,
     },

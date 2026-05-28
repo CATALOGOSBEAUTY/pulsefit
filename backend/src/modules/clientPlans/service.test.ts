@@ -43,7 +43,7 @@ describe('client plans service', () => {
         name: 'Plano 3',
         monthlyPriceCents: 74990,
         loyaltyMonths: 6,
-        maxProducts: 450,
+        maxProducts: null,
         maxCategories: 20,
         maxSubcategories: 20,
         hasAdminCenter: true,
