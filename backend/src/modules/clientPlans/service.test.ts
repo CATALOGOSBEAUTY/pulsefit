@@ -21,7 +21,7 @@ describe('client plans service', () => {
       {
         code: 'basic',
         name: 'Plano 1',
-        monthlyPriceCents: 4990,
+        monthlyPriceCents: 14990,
         loyaltyMonths: 3,
         maxProducts: 50,
         maxCategories: null,

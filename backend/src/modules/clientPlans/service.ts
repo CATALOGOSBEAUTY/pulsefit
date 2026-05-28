@@ -33,7 +33,7 @@ const CLIENT_PLANS: ClientPlanDefinition[] = [
     code: 'basic',
     name: 'Plano 1',
     label: 'Catalogo com 50 produtos',
-    monthlyPriceCents: 4_990,
+    monthlyPriceCents: 14_990,
     loyaltyMonths: 3,
     limits: {
       maxProducts: 50,
