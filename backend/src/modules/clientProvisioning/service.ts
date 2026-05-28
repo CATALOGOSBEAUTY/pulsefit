@@ -1,4 +1,5 @@
 import { normalizeCheckoutMode, type CheckoutMode } from '../catalogConfig/service.js';
+import { resolvePlanLimits } from '../clientPlans/service.js';
 
 export type ClientPlanCode = 'basic' | 'medium' | 'master' | 'custom';
 
@@ -109,6 +110,12 @@ export function parseClientConfig(rawInput: unknown): ClientConfig {
     throw new Error(errors.join('\n'));
   }
 
+  const limits = resolvePlanLimits(planCode, {
+    maxProducts,
+    maxCategories,
+    maxSubcategories,
+  });
+
   return {
     storeName,
     storeSlug,
@@ -120,9 +127,9 @@ export function parseClientConfig(rawInput: unknown): ClientConfig {
     checkoutMode,
     externalCheckoutUrl,
     planCode,
-    maxProducts,
-    maxCategories,
-    maxSubcategories,
+    maxProducts: limits.maxProducts,
+    maxCategories: limits.maxCategories,
+    maxSubcategories: limits.maxSubcategories,
     isActive: input.isActive === undefined ? true : Boolean(input.isActive),
   };
 }

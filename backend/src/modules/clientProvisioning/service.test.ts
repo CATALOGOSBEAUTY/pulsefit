@@ -18,9 +18,6 @@ describe('client provisioning service', () => {
       whatsappPhone: ' 5511999999999 ',
       checkoutMode: 'whatsapp',
       planCode: 'basic',
-      maxProducts: 80,
-      maxCategories: 8,
-      maxSubcategories: 30,
       isActive: true,
     });
 
@@ -35,11 +32,26 @@ describe('client provisioning service', () => {
       checkoutMode: 'whatsapp',
       externalCheckoutUrl: null,
       planCode: 'basic',
-      maxProducts: 80,
-      maxCategories: 8,
-      maxSubcategories: 30,
+      maxProducts: 50,
+      maxCategories: null,
+      maxSubcategories: null,
       isActive: true,
     });
+  });
+
+  it('fills limits from the selected commercial plan', () => {
+    const config = parseClientConfig({
+      storeName: 'Bella Fit',
+      storeSlug: 'bella-fit',
+      primaryColor: '#e91e63',
+      secondaryColor: '#111827',
+      checkoutMode: 'whatsapp',
+      planCode: 'medium',
+    });
+
+    assert.equal(config.maxProducts, 250);
+    assert.equal(config.maxCategories, 10);
+    assert.equal(config.maxSubcategories, 5);
   });
 
   it('maps a client config to the catalog_config database row', () => {
@@ -101,9 +113,6 @@ describe('client provisioning service', () => {
       secondaryColor: '#111827',
       checkoutMode: 'whatsapp',
       planCode: 'basic',
-      maxProducts: 80,
-      maxCategories: 8,
-      maxSubcategories: 30,
     });
 
     assert.deepEqual(safeClientSummary(config), {
@@ -112,9 +121,9 @@ describe('client provisioning service', () => {
       checkoutMode: 'whatsapp',
       planCode: 'basic',
       limits: {
-        maxProducts: 80,
-        maxCategories: 8,
-        maxSubcategories: 30,
+        maxProducts: 50,
+        maxCategories: null,
+        maxSubcategories: null,
       },
       isActive: true,
     });

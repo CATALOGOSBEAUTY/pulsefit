@@ -9,8 +9,5 @@
   "checkoutMode": "whatsapp",
   "externalCheckoutUrl": null,
   "planCode": "basic",
-  "maxProducts": 80,
-  "maxCategories": 8,
-  "maxSubcategories": 30,
   "isActive": true
 }
