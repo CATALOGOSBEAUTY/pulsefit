@@ -7,7 +7,7 @@ import { requireAuth } from '../../middleware/requireAuth.js';
 import { loginKey, rateLimit } from '../../middleware/rateLimit.js';
 import { validateAdminAccessCode } from './adminSecrets.js';
 import { consumeStoredGateToken, createStoredGateToken } from './gateTokens.js';
-import { serializeLogoutCookie, serializeSessionCookie } from './sessionCookie.js';
+import { buildLoginResponse, serializeLogoutCookie, serializeSessionCookie } from './sessionCookie.js';
 import {
   confirmAdminTotpSetup,
   getAdminTotpSetupStatus,
@@ -118,12 +118,7 @@ authRouter.post('/login', rateLimit({
     const token = createSession(adminEmail);
 
     res.setHeader('Set-Cookie', serializeSessionCookie(token, env.nodeEnv));
-    return ok(res, {
-      user: {
-        id: 'admin',
-        email: adminEmail,
-      },
-    });
+    return ok(res, buildLoginResponse(adminEmail, token, req));
   } catch (error) {
     return handleError(res, error);
   }

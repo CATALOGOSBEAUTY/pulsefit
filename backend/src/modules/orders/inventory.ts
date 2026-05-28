@@ -12,6 +12,11 @@ interface AppliedStockAdjustment {
   previousStock: number;
 }
 
+interface AtomicStockResult {
+  previous_stock: number | string;
+  next_stock: number | string;
+}
+
 export function buildInventoryAdjustments(items: InventoryItem[]) {
   return items.reduce(
     (acc, item) => {
@@ -35,47 +40,13 @@ export async function applyInventoryAdjustments(supabase: any, items: InventoryI
 
   try {
     for (const adjustment of adjustments.productVariants) {
-      const { data: variant, error: readError } = await supabase
-        .from('product_variants')
-        .select('stock_quantity')
-        .eq('id', adjustment.id)
-        .single();
-      if (readError) throw readError;
-
-      const previousStock = Number(variant.stock_quantity ?? 0);
-      if (previousStock < adjustment.quantity) {
-        throw new ApiError(400, 'Estoque insuficiente para a variacao selecionada.');
-      }
-      const nextStock = Math.max(0, previousStock - adjustment.quantity);
-      const { error: updateError } = await supabase
-        .from('product_variants')
-        .update({ stock_quantity: nextStock, updated_at: new Date().toISOString() })
-        .eq('id', adjustment.id);
-      if (updateError) throw updateError;
+      const previousStock = await decrementStock(supabase, 'product_variants', adjustment.id, adjustment.quantity);
       applied.push({ table: 'product_variants', id: adjustment.id, previousStock });
     }
 
     for (const adjustment of adjustments.products) {
-      const { data: product, error: readError } = await supabase
-        .from('products')
-        .select('stock_quantity')
-        .eq('id', adjustment.id)
-        .single();
-      if (readError) throw readError;
-
-      const currentStock = Number(product.stock_quantity ?? 0);
-      if (currentStock <= 0) continue;
-      if (currentStock < adjustment.quantity) {
-        throw new ApiError(400, 'Estoque insuficiente para o produto selecionado.');
-      }
-
-      const nextStock = Math.max(0, currentStock - adjustment.quantity);
-      const { error: updateError } = await supabase
-        .from('products')
-        .update({ stock_quantity: nextStock, updated_at: new Date().toISOString() })
-        .eq('id', adjustment.id);
-      if (updateError) throw updateError;
-      applied.push({ table: 'products', id: adjustment.id, previousStock: currentStock });
+      const previousStock = await decrementStock(supabase, 'products', adjustment.id, adjustment.quantity);
+      applied.push({ table: 'products', id: adjustment.id, previousStock });
     }
   } catch (error) {
     for (const adjustment of applied.reverse()) {
@@ -86,4 +57,33 @@ export async function applyInventoryAdjustments(supabase: any, items: InventoryI
     }
     throw error;
   }
+}
+
+async function decrementStock(
+  supabase: any,
+  table: 'products' | 'product_variants',
+  id: string,
+  quantity: number
+): Promise<number> {
+  const { data, error } = await supabase.rpc('decrement_inventory_stock', {
+    target_table: table,
+    target_id: id,
+    decrement_by: quantity,
+  });
+
+  if (error) {
+    throw new ApiError(400, table === 'product_variants'
+      ? 'Estoque insuficiente para a variacao selecionada.'
+      : 'Estoque insuficiente para o produto selecionado.');
+  }
+
+  const result = Array.isArray(data) ? data[0] as AtomicStockResult | undefined : data as AtomicStockResult | undefined;
+  const previousStock = Number(result?.previous_stock);
+  if (!Number.isFinite(previousStock)) {
+    throw new ApiError(400, table === 'product_variants'
+      ? 'Estoque insuficiente para a variacao selecionada.'
+      : 'Estoque insuficiente para o produto selecionado.');
+  }
+
+  return previousStock;
 }

@@ -32,9 +32,41 @@ describe('buildInventoryAdjustments', () => {
 });
 
 describe('applyInventoryAdjustments', () => {
+  it('decrements stock through the atomic inventory RPC', async () => {
+    const calls: Array<Record<string, unknown>> = [];
+    const supabase = {
+      async rpc(name: string, params: Record<string, unknown>) {
+        calls.push({ name, params });
+        return { data: [{ previous_stock: 5, next_stock: 3 }], error: null };
+      },
+    };
+
+    await applyInventoryAdjustments(supabase, [
+      { product_id: 'p1', product_variant_id: 'v1', quantity: 2 },
+    ]);
+
+    assert.deepEqual(calls, [
+      {
+        name: 'decrement_inventory_stock',
+        params: {
+          target_table: 'product_variants',
+          target_id: 'v1',
+          decrement_by: 2,
+        },
+      },
+    ]);
+  });
+
   it('rolls back previous stock updates when a later update fails', async () => {
     const stocks: Record<string, number> = { v1: 5, v2: 5 };
     const supabase = {
+      async rpc(_name: string, params: Record<string, unknown>) {
+        const id = String(params.target_id);
+        if (id === 'v2') return { data: null, error: new Error('update failed') };
+        const previousStock = stocks[id];
+        stocks[id] = previousStock - Number(params.decrement_by);
+        return { data: [{ previous_stock: previousStock, next_stock: stocks[id] }], error: null };
+      },
       from(table: string) {
         let selectedId = '';
         return {
@@ -68,7 +100,7 @@ describe('applyInventoryAdjustments', () => {
         { product_id: 'p1', product_variant_id: 'v1', quantity: 2 },
         { product_id: 'p1', product_variant_id: 'v2', quantity: 1 },
       ]),
-      /update failed/
+      (error) => error instanceof ApiError && error.status === 400
     );
 
     assert.equal(stocks.v1, 5);
@@ -77,6 +109,9 @@ describe('applyInventoryAdjustments', () => {
   it('rejects quantities above managed base product stock', async () => {
     const stocks: Record<string, number> = { p1: 1 };
     const supabase = {
+      async rpc() {
+        return { data: null, error: { message: 'Estoque insuficiente', code: 'P0001' } };
+      },
       from() {
         let selectedId = '';
         return {

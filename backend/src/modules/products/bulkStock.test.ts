@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { ApiError } from '../../lib/http.js';
 import { parseBulkStockPayload } from './bulkStock.js';
+import { parseProductPayload } from './routes.js';
 
 describe('parseBulkStockPayload', () => {
   it('accepts explicit product ids and a non-negative integer stock quantity', () => {
@@ -33,5 +34,18 @@ describe('parseBulkStockPayload', () => {
       () => parseBulkStockPayload({ productIds: ['prod-1'], stockQuantity: 1.5 }),
       (error) => error instanceof ApiError && error.status === 400 && error.message === 'Quantidade de estoque invalida.'
     );
+  });
+});
+
+describe('parseProductPayload', () => {
+  it('creates new products as inactive drafts unless explicitly published', () => {
+    const payload = parseProductPayload({
+      title: 'Produto',
+      price: 10,
+      categoryId: 'category-id',
+    });
+
+    assert.equal(payload.catalogStatus, 'draft');
+    assert.equal(payload.isActive, false);
   });
 });

@@ -4,6 +4,7 @@ import { ApiError, handleError, ok, requireString } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../catalog/service.js';
 import { assertPublicCatalogQuery } from '../catalog/publicQueryGuard.js';
+import { assertCatalogResourceLimit } from '../catalogConfig/service.js';
 import { mapCategory } from './mapper.js';
 
 export const categoryRouter = Router();
@@ -86,8 +87,10 @@ categoryRouter.post('/', requireAuth, async (req, res) => {
     const parentId = req.body.parentId ?? req.body.parent_id ?? null;
     const slug = await buildSlug(name, parentId);
     const sortOrder = Number(req.body.sort_order ?? 0);
+    const supabase = getSupabaseAdmin();
+    await assertCatalogResourceLimit(supabase, parentId ? 'subcategories' : 'categories');
 
-    const { data, error } = await getSupabaseAdmin()
+    const { data, error } = await supabase
       .from('categories')
       .insert({ name, slug, parent_id: parentId, sort_order: sortOrder, is_active: req.body.is_active ?? true })
       .select('*')

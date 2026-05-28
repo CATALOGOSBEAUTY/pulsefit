@@ -2,6 +2,7 @@ import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { mapCategory } from '../categories/mapper.js';
 import { mapProduct } from '../products/mapper.js';
 import { productSelect } from '../products/select.js';
+import { applyPublicCatalogProductVisibility } from './publicQueryGuard.js';
 import { buildProductRelevanceMap } from './relevance.js';
 import type { OrderRelevanceSource, ProductRelevanceSource } from './relevance.js';
 
@@ -26,6 +27,10 @@ let pendingPublicCatalogRefresh: Promise<PublicCatalogSnapshot> | null = null;
 
 async function refreshPublicCatalogSnapshot(): Promise<PublicCatalogSnapshot> {
   const supabase = getSupabaseAdmin();
+  const publicProductsQuery = applyPublicCatalogProductVisibility(
+    supabase.from('products').select(productSelect()) as any
+  );
+
   const [categoriesResult, productsResult, ordersResult] = await Promise.all([
     supabase
       .from('categories')
@@ -34,11 +39,7 @@ async function refreshPublicCatalogSnapshot(): Promise<PublicCatalogSnapshot> {
       .order('parent_id', { ascending: true, nullsFirst: true })
       .order('sort_order', { ascending: true })
       .order('name', { ascending: true }),
-    supabase
-      .from('products')
-      .select(productSelect())
-      .eq('is_active', true)
-      .order('created_at', { ascending: false }),
+    publicProductsQuery.order('created_at', { ascending: false }),
     supabase
       .from('orders')
       .select('status, created_at, order_items(product_id, quantity)')

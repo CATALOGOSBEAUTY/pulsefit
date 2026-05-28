@@ -1,0 +1,16 @@
+{
+  "storeName": "Bella Fit",
+  "storeSlug": "bella-fit",
+  "logoUrl": "https://cdn.example.com/bella-fit/logo.png",
+  "bannerUrl": "https://cdn.example.com/bella-fit/banner.png",
+  "primaryColor": "#e91e63",
+  "secondaryColor": "#111827",
+  "whatsappPhone": "5511999999999",
+  "checkoutMode": "whatsapp",
+  "externalCheckoutUrl": null,
+  "planCode": "basic",
+  "maxProducts": 80,
+  "maxCategories": 8,
+  "maxSubcategories": 30,
+  "isActive": true
+}

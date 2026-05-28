@@ -1,5 +1,6 @@
 export const SESSION_COOKIE_NAME = 'pulsefit_admin_session';
 export const CSRF_HEADER = 'x-admin-request';
+export const ADMIN_CLIENT_HEADER = 'x-admin-client';
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
 
 interface RequestLike {
@@ -61,4 +62,29 @@ export function isUnsafeAuthenticatedRequest(req: RequestLike): boolean {
 
   const headerValue = firstHeader(req.headers[CSRF_HEADER]);
   return headerValue !== 'true';
+}
+
+export function shouldReturnSessionTokenInBody(req: RequestLike): boolean {
+  return firstHeader(req.headers[ADMIN_CLIENT_HEADER]) === 'mobile';
+}
+
+export function buildLoginResponse(email: string, token: string, req: RequestLike) {
+  const response: {
+    user: {
+      id: 'admin';
+      email: string;
+    };
+    token?: string;
+  } = {
+    user: {
+      id: 'admin',
+      email,
+    },
+  };
+
+  if (shouldReturnSessionTokenInBody(req)) {
+    response.token = token;
+  }
+
+  return response;
 }

@@ -115,6 +115,7 @@ export async function loginAdmin(email: string, password: string, gateToken: str
     method: 'POST',
     headers: {
       'X-Admin-Gate-Token': gateToken,
+      'X-Admin-Client': 'mobile',
     },
     body: JSON.stringify({ email, password }),
   });

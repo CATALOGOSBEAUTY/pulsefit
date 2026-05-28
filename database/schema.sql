@@ -112,6 +112,30 @@ create table if not exists public.settings (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.catalog_config (
+  id boolean primary key default true check (id = true),
+  store_name text not null default 'PulseFit Suplementos',
+  store_slug text not null default 'pulsefit',
+  logo_url text,
+  banner_url text,
+  primary_color text not null default '#15b86a',
+  secondary_color text not null default '#111827',
+  whatsapp_phone text,
+  checkout_mode text not null default 'whatsapp' check (checkout_mode in ('whatsapp', 'internal_order', 'external_link', 'pix_whatsapp')),
+  external_checkout_url text,
+  plan_code text not null default 'medium' check (plan_code in ('basic', 'medium', 'master', 'custom')),
+  max_products integer check (max_products is null or max_products >= 0),
+  max_categories integer check (max_categories is null or max_categories >= 0),
+  max_subcategories integer check (max_subcategories is null or max_subcategories >= 0),
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+insert into public.catalog_config (id)
+values (true)
+on conflict (id) do nothing;
+
 create index if not exists idx_products_category_id on public.products(category_id);
 create index if not exists idx_products_subcategory_id on public.products(subcategory_id);
 create index if not exists idx_categories_parent_id on public.categories(parent_id);
@@ -130,6 +154,63 @@ as $$
 begin
   new.updated_at = now();
   return new;
+end;
+$$;
+
+create or replace function public.decrement_inventory_stock(
+  target_table text,
+  target_id uuid,
+  decrement_by integer
+)
+returns table(previous_stock integer, next_stock integer)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_stock integer;
+begin
+  if decrement_by <= 0 then
+    raise exception 'Quantidade de estoque invalida.';
+  end if;
+
+  if target_table = 'products' then
+    select stock_quantity
+      into current_stock
+      from public.products
+      where id = target_id
+      for update;
+
+    if not found or current_stock < decrement_by then
+      raise exception 'Estoque insuficiente para o produto selecionado.';
+    end if;
+
+    update public.products
+      set stock_quantity = current_stock - decrement_by,
+          updated_at = now()
+      where id = target_id;
+  elsif target_table = 'product_variants' then
+    select stock_quantity
+      into current_stock
+      from public.product_variants
+      where id = target_id
+      for update;
+
+    if not found or current_stock < decrement_by then
+      raise exception 'Estoque insuficiente para a variacao selecionada.';
+    end if;
+
+    update public.product_variants
+      set stock_quantity = current_stock - decrement_by,
+          updated_at = now()
+      where id = target_id;
+  else
+    raise exception 'Tabela de estoque invalida.';
+  end if;
+
+  previous_stock := current_stock;
+  next_stock := current_stock - decrement_by;
+  return next;
 end;
 $$;
 
@@ -156,4 +237,9 @@ for each row execute function public.set_updated_at();
 drop trigger if exists trg_settings_updated_at on public.settings;
 create trigger trg_settings_updated_at
 before update on public.settings
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_catalog_config_updated_at on public.catalog_config;
+create trigger trg_catalog_config_updated_at
+before update on public.catalog_config
 for each row execute function public.set_updated_at();

@@ -3,22 +3,10 @@ import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { ApiError, handleError, ok } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { loadPublicCatalogSnapshot } from '../catalog/service.js';
+import { loadMergedPublicSettings } from '../catalogConfig/service.js';
 import { buildStoreUsage, mapMobileProduct, normalizeStoreSlug, resolveMobilePlan } from './contract.js';
 
 export const mobileRouter = Router();
-
-async function loadPublicSettings() {
-  const { data, error } = await getSupabaseAdmin()
-    .from('settings')
-    .select('key,value')
-    .eq('is_public', true);
-
-  if (error) throw error;
-  return (data ?? []).reduce<Record<string, string>>((acc, row) => {
-    acc[row.key] = row.value ?? '';
-    return acc;
-  }, {});
-}
 
 async function countOrdersThisMonth() {
   const start = new Date();
@@ -37,7 +25,7 @@ async function countOrdersThisMonth() {
 async function loadMobileStore(slugInput: string) {
   const slug = normalizeStoreSlug(slugInput);
   const [settings, catalog, ordersThisMonth] = await Promise.all([
-    loadPublicSettings(),
+    loadMergedPublicSettings(),
     loadPublicCatalogSnapshot(),
     countOrdersThisMonth(),
   ]);

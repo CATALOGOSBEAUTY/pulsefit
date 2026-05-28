@@ -68,7 +68,8 @@ orderRouter.post('/', async (req, res) => {
       .from('products')
       .select('id,title,price,is_active,stock_quantity,product_variants(id,label,options,price,stock_quantity,is_active)')
       .in('id', productIds)
-      .eq('is_active', true);
+      .eq('is_active', true)
+      .eq('catalog_status', 'live');
 
     if (productsError) throw productsError;
     if (!products || products.length !== productIds.length) {

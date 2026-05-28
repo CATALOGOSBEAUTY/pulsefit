@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getSupabaseAdmin } from '../../lib/supabase.js';
 import { handleError, ok } from '../../lib/http.js';
 import { requireAuth } from '../../middleware/requireAuth.js';
+import { loadMergedPublicSettings } from '../catalogConfig/service.js';
 import { normalizePublicSettingsPayload } from './publicSettings.js';
 
 export const settingsRouter = Router();
@@ -15,9 +16,7 @@ function toObject(rows: any[] = []) {
 
 settingsRouter.get('/', async (_req, res) => {
   try {
-    const { data, error } = await getSupabaseAdmin().from('settings').select('key,value').eq('is_public', true);
-    if (error) throw error;
-    return ok(res, toObject(data ?? []));
+    return ok(res, await loadMergedPublicSettings());
   } catch (error) {
     return handleError(res, error);
   }

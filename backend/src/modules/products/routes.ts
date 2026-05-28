@@ -4,6 +4,7 @@ import { ApiError, handleError, ok, optionalString, requireNumber, requireString
 import { requireAuth } from '../../middleware/requireAuth.js';
 import { invalidatePublicCatalogCache, loadPublicCatalogSnapshot } from '../catalog/service.js';
 import { assertPublicCatalogQuery } from '../catalog/publicQueryGuard.js';
+import { assertCatalogResourceLimit } from '../catalogConfig/service.js';
 import { parseBulkStockPayload } from './bulkStock.js';
 import { mapProduct, type ProductPayload } from './mapper.js';
 import { productSelect } from './select.js';
@@ -12,7 +13,7 @@ import { saveProductImages, saveProductVariants } from './childCollections.js';
 
 export const productRouter = Router();
 
-function parseProductPayload(body: any): ProductPayload {
+export function parseProductPayload(body: any): ProductPayload {
   const rawSubcategoryId = body.subcategoryId ?? body.subcategory_id;
   const rawAudience = body.audience;
   const audience = rawAudience === 'feminino' || rawAudience === 'masculino' || rawAudience === 'suplemento'
@@ -37,7 +38,7 @@ function parseProductPayload(body: any): ProductPayload {
     imagePrompt: optionalString(body.imagePrompt ?? body.image_prompt),
     catalogStatus,
     images: Array.isArray(body.images) ? body.images.filter((item: unknown) => typeof item === 'string') : [],
-    isActive: body.isActive ?? body.is_active ?? true,
+    isActive: body.isActive ?? body.is_active ?? catalogStatus === 'live',
     isFeatured: body.isFeatured ?? body.is_featured ?? false,
     isPromo: body.isPromo ?? body.is_promo ?? false,
     isNew: body.isNew ?? body.is_new ?? false,
@@ -99,7 +100,9 @@ productRouter.post('/', requireAuth, async (req, res) => {
   try {
     const payload = parseProductPayload(req.body);
     await validateCategoryTree(payload.categoryId, payload.subcategoryId);
-    const { data, error } = await getSupabaseAdmin()
+    const supabase = getSupabaseAdmin();
+    await assertCatalogResourceLimit(supabase, 'products');
+    const { data, error } = await supabase
       .from('products')
       .insert({
         slug: payload.slug ?? null,
@@ -125,7 +128,6 @@ productRouter.post('/', requireAuth, async (req, res) => {
       .single();
 
     if (error) throw error;
-    const supabase = getSupabaseAdmin();
     await saveProductImages(supabase, data.id, payload.images, payload.title);
     await saveProductVariants(supabase, data.id, payload.variants ?? []);
 

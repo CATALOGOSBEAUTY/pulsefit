@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
   bannerWrap: { height: 220, borderRadius: 8, overflow: 'hidden' },
   banner: { width: '100%', height: '100%' },
   bannerOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0,0,0,0.38)',
     padding: 18,
     justifyContent: 'flex-end',

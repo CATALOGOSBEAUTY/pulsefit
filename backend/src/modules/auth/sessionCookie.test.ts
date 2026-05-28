@@ -3,10 +3,12 @@ import { describe, it } from 'node:test';
 import {
   CSRF_HEADER,
   SESSION_COOKIE_NAME,
+  buildLoginResponse,
   extractSessionToken,
   isUnsafeAuthenticatedRequest,
   serializeLogoutCookie,
   serializeSessionCookie,
+  shouldReturnSessionTokenInBody,
 } from './sessionCookie.js';
 
 describe('admin session cookies', () => {
@@ -52,5 +54,26 @@ describe('admin session cookies', () => {
     assert.equal(isUnsafeAuthenticatedRequest({ method: 'GET', headers: {} }), false);
     assert.equal(isUnsafeAuthenticatedRequest({ method: 'POST', headers: {} }), true);
     assert.equal(isUnsafeAuthenticatedRequest({ method: 'DELETE', headers: { [CSRF_HEADER]: 'true' } }), false);
+  });
+
+  it('returns the raw session token only for explicit mobile admin clients', () => {
+    const webRequest = { headers: {} };
+    const mobileRequest = { headers: { 'x-admin-client': 'mobile' } };
+
+    assert.equal(shouldReturnSessionTokenInBody(webRequest), false);
+    assert.equal(shouldReturnSessionTokenInBody(mobileRequest), true);
+    assert.deepEqual(buildLoginResponse('admin@pulsefit.local', 'session-token', webRequest), {
+      user: {
+        id: 'admin',
+        email: 'admin@pulsefit.local',
+      },
+    });
+    assert.deepEqual(buildLoginResponse('admin@pulsefit.local', 'session-token', mobileRequest), {
+      user: {
+        id: 'admin',
+        email: 'admin@pulsefit.local',
+      },
+      token: 'session-token',
+    });
   });
 });

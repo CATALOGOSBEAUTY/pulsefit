@@ -31,7 +31,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Gate-Token', 'X-Admin-Request'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Admin-Gate-Token', 'X-Admin-Request', 'X-Admin-Client'],
   maxAge: 600,
 }));
 app.use(rateLimit({
